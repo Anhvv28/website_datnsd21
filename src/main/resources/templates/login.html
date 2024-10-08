@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form Popup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    /* Basic styling for the icon */
+    .icon-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f2f2f2;
+    }
+
+    .login-icon {
+        width: 80px;
+        cursor: pointer;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        /*display: none; !* Hidden by default *!*/
+        position: fixed;
+        display: flex;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5); /* Black with opacity */
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        position: relative;
+        text-align: center;
+    }
+
+    /* Close Button */
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: #000;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* Style for the login form */
+    .login-header img.logo {
+        width: 100px;
+    }
+
+    .login-header h2 {
+        font-size: 20px;
+        color: #000;
+        margin-bottom: 10px;
+    }
+
+    .login-header p {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .login-form p {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .social-login {
+        display: flex;
+        justify-content: space-evenly;
+        margin: 15px 0;
+    }
+
+    .social-login button {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .social-login button:hover {
+        background-color: #f0f0f0;
+    }
+
+    input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .checkbox-group {
+        text-align: left;
+        font-size: 12px;
+    }
+
+    .checkbox-group label {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .checkbox-group a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .checkbox-group a:hover {
+        text-decoration: underline;
+    }
+
+    .submit-button {
+        background-color: #000;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .submit-button:hover {
+        background-color: #333;
+    }
+
+</style>
+<body>
+<!-- Icon trigger button -->
+<div class="icon-container">
+    <img src="images/cloud-computing.png" alt="Login Icon" id="loginIcon" class="login-icon">
+</div>
+
+<!-- The Modal (Popup Form) -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="login-container">
+            <div class="login-header">
+                <img src="images/cloud-computing.png" alt="Adiclub logo" class="logo">
+                <h2>LỢI ÍCH ISD CLUB CỦA BẠN ĐANG CHỜ ĐÓN</h2>
+                <p>Nhận miễn phí giao hàng, phiếu giảm giá và sản phẩm dành riêng cho thành viên khi bạn tham gia adiClub.</p>
+            </div>
+
+            <div class="login-form">
+                <p>Đăng nhập hoặc đăng ký (miễn phí)</p>
+                <div class="social-login">
+                    <button class="apple-login"></button>
+                    <button class="facebook-login">f</button>
+                    <button class="google-login">
+                        <a th:href="@{/oauth2/authorization/google}" class="google-login">
+                            G
+                        </a>
+                    </button>
+                </div>
+
+                <input type="email" placeholder="Địa chỉ email" required>
+
+                <div class="checkbox-group">
+                    <label><input type="checkbox" required>Vâng, tôi đã trên 18 tuổi.</label>
+                    <label><input type="checkbox" required>Tôi đã đọc, hiểu và chấp nhận <a href="#">Chính sách bảo mật</a>.</label>
+                    <label><input type="checkbox">Tôi đồng ý cho phép adidas sử dụng dữ liệu của tôi.</label>
+                </div>
+
+                <button class="submit-button">Đăng ký</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("loginModal");
+
+    // Get the icon that opens the modal
+    var loginIcon = document.getElementById("loginIcon");
+
+    // Get the <span> element that closes the modal
+    var closeBtn = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the icon, open the modal
+    loginIcon.onclick = function() {
+        modal.style.display = "flex"; // Show modal and center it using flexbox
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>
+</body>
+</html>
