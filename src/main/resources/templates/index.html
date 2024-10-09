@@ -101,11 +101,19 @@
           </li>
 
           <li>
-            <a href="/login" class="nav-action-btn">
+            <a href="#" id="loginIcon" class="nav-action-btn">
               <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
               <span class="nav-action-text">Login / Register</span>
             </a>
           </li>
+
+          <!-- Modal container for the login form -->
+          <div id="loginModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <div id="modal-body"></div> <!-- Nội dung của form sẽ được chèn vào đây -->
+            </div>
+          </div>
 
           <li>
             <button class="nav-action-btn">

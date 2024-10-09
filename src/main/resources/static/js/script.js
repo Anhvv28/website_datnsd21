@@ -67,3 +67,33 @@ window.addEventListener("scroll", function () {
     goTopBtn.classList.remove("active");
   }
 });
+document.addEventListener('DOMContentLoaded', function () {
+  // Lấy modal và các nút liên quan
+  var modal = document.getElementById("loginModal");
+  var loginIcon = document.getElementById("loginIcon");
+  var closeBtn = document.getElementsByClassName("close")[0];
+
+  // Khi nhấp vào biểu tượng, tải form từ login.html
+  loginIcon.onclick = function () {
+    fetch('login.html') // Tải file login.html
+        .then(response => response.text()) // Đọc nội dung HTML
+        .then(data => {
+          document.getElementById('modal-body').innerHTML = data; // Chèn nội dung vào modal
+          modal.style.display = "flex"; // Hiển thị modal
+        });
+  }
+
+  // Đóng modal khi nhấn nút close
+  if (closeBtn) {
+    closeBtn.onclick = function () {
+      modal.style.display = "none";
+    }
+  }
+
+  // Đóng modal khi nhấp ra ngoài modal
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+});
