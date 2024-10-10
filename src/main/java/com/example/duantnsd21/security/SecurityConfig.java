@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -24,7 +25,8 @@ public class SecurityConfig {
                 // Enable OAuth2 login for Google and Facebook
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // Set the home page as the login page (no auto-redirect)
-                        .defaultSuccessUrl("/") // After login, redirect to home page
+                        .defaultSuccessUrl("/", true) // After login, redirect to home page
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout

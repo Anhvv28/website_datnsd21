@@ -65,27 +65,29 @@
         <ul class="navbar-list">
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link">Home</a>
+            <a href="#" class="navbar-link">Trang Chủ</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link">About</a>
+            <a href="#" class="navbar-link">Nike</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link">Products</a>
+            <a href="#" class="navbar-link">Adidas</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link">Shop</a>
+            <a href="#" class="navbar-link">Hãng Khác</a>
           </li>
 
           <li class="navbar-item">
-            <a href="#" class="navbar-link">Blog</a>
+            <a href="#" class="navbar-link">FLASK SALE</a>
           </li>
-
+          <div>
+            <h6>Xin chào, <span th:text="${name}">Người dùng</span></h6>
+          </div>
           <li class="navbar-item">
-            <a href="#" class="navbar-link">Contact</a>
+            <a href="#" class="navbar-link">Hỗ Trợ</a>
           </li>
 
         </ul>
@@ -101,7 +103,7 @@
           </li>
 
           <li>
-            <a href="#" id="loginIcon" class="nav-action-btn">
+            <a id="loginIcon" class="nav-action-btn">
               <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
               <span class="nav-action-text">Login / Register</span>
             </a>
@@ -111,7 +113,7 @@
           <div id="loginModal" class="modal">
             <div class="modal-content">
               <span class="close">&times;</span>
-              <div id="modal-body"></div> <!-- Nội dung của form sẽ được chèn vào đây -->
+              <div id="modal-body"></div>
             </div>
           </div>
 
