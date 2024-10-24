@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Integer> {
     NguoiDung findByEmail(String email);
+    NguoiDung findByTaiKhoan(String taiKhoan);
+
 }
 

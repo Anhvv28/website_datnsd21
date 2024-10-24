@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ import java.util.Date;
 public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "tai_khoan")
@@ -41,6 +43,10 @@ public class NguoiDung {
     @Column(name = "cccd")
     private String cccd;
 
-//    @Column(name = "trangThai")
-//    private int trangThai;
+    @Column(name = "trang_thai")
+    private int trangThai;
+
+    @OneToOne(mappedBy = "nguoiDung", cascade = CascadeType.ALL)
+    private NhanVien nhanVien;
+
 }

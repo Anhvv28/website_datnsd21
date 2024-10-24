@@ -1,34 +1,43 @@
 package com.example.duantnsd21.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.duantnsd21.entity.NguoiDung;
+import com.example.duantnsd21.entity.NhanVien;
+import com.example.duantnsd21.repository.NguoiDungRepository;
+import com.example.duantnsd21.repository.NhanVienRepository;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-//@Service
-////public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-//    @Autowired
-//    private UserRepository userRepository; // Repository để lưu vào DB
+@Service
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-//    @Override
-//    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-//        OAuth2User oAuth2User = super.loadUser(userRequest);
+    private final NguoiDungRepository nguoiDungRepository;
 
-        // Lấy thông tin từ Google
-//        String email = oAuth2User.getAttribute("email");
+    public CustomOAuth2UserService(NguoiDungRepository nguoiDungRepository) {
+        this.nguoiDungRepository = nguoiDungRepository;
+    }
 
-        // Kiểm tra xem email đã có trong DB chưa
-//        User user = userRepository.findByEmail(email);
-//        if (user == null) {
-//            // Nếu chưa có, tạo mới và lưu vào DB
-//            user = new User();
-//            user.setEmail(email);
-//            user.setName(oAuth2User.getAttribute("name"));
-//            userRepository.save(user);
-//        }
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
-//        return oAuth2User;
-//    }
-//}
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+
+        NguoiDung existingNguoiDung = nguoiDungRepository.findByEmail(email);
+
+        if (existingNguoiDung == null) {
+            NguoiDung nguoiDung = new NguoiDung();
+            nguoiDung.setTaiKhoan(email);
+            nguoiDung.setMatKhau("");
+            nguoiDung.setEmail(email);
+            nguoiDung.setHoTen(name);
+            nguoiDungRepository.save(nguoiDung);
+        }
+
+        return oAuth2User;
+    }
+}
+
