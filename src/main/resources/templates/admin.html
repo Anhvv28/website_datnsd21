@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Shoe Store Management</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
@@ -94,7 +94,7 @@
         <a class="nav-link" href="#reports" onclick="showSection('reports')">
             <i class="fa fa-bar-chart"></i> Reports
         </a>
-<!--        logou-->
+        <button class="btn btn-outline-primary" onclick="window.location.href='/'">Back to Homepage</button>
         <button class="btn btn-outline-danger" onclick="window.location.href='/logout'">Logout</button>
     </nav>
 
@@ -102,8 +102,8 @@
     <main class="col-md-12 px-md-4">
         <div id="dashboard" class="content-section">
 
-            <h4 th:text="'Hi ' + ${userName} +' Admin'"></h4>
-<!--            <p>Email: <span th:text="${userEmail}">user@example.com</span></p>-->
+            <h4 th:text="'Hi ' + ${userName}">Hi Admin</h4>
+            <p>Email: <span th:text="${userEmail}">user@example.com</span></p>
 
             <div class="overview-card-wrapper">
                 <div class="overview-card">

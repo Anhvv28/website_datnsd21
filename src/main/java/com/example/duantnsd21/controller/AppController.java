@@ -48,7 +48,7 @@ public class AppController {
             if (principal instanceof OAuth2User) {
                 OAuth2User oAuth2User = (OAuth2User) principal;
                 model.addAttribute("userName", oAuth2User.getAttribute("name"));
-//                model.addAttribute("userEmail", oAuth2User.getAttribute("email"));
+                model.addAttribute("userEmail", oAuth2User.getAttribute("email"));
             } else if (principal instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) principal;
                 model.addAttribute("userName", userDetails.getUsername());
@@ -56,13 +56,19 @@ public class AppController {
                 // Fetch additional user details from your database
                 NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
                 if (nguoiDung != null) {
-//                    model.addAttribute("userEmail", nguoiDung.getEmail());
+                    model.addAttribute("userEmail", nguoiDung.getEmail());
                     model.addAttribute("fullName", nguoiDung.getHoTen());
+
+                    // Add role to the model if the user is an employee
+                    if (nguoiDung.getNhanVien() != null) {
+                        model.addAttribute("vaiTro", nguoiDung.getNhanVien().getVaiTro());
+                    }
                 }
             }
         }
         return "index";
     }
+
 
     @GetMapping("/login-form")
     public String loginForm() {
