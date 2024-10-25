@@ -115,31 +115,31 @@ public class AppController {
                 // OAuth2 authentication
                 OAuth2User oAuth2User = (OAuth2User) principal;
                 String userName = oAuth2User.getAttribute("name");
-//                String userEmail = oAuth2User.getAttribute("email");
+                String userEmail = oAuth2User.getAttribute("email");
 
                 model.addAttribute("userName", userName);
-//                model.addAttribute("userEmail", userEmail);
+                model.addAttribute("userEmail", userEmail);
 
                 Collection<? extends GrantedAuthority> authorities = oAuth2User.getAuthorities();
                 setRoleAttributes(authorities, model);
 
             } else if (principal instanceof UserDetails) {
-                // Form-based authentication
+//                 Form-based authentication
                 UserDetails userDetails = (UserDetails) principal;
                 String username = userDetails.getUsername();
 
                 NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(username);
                 if (nguoiDung != null) {
                     String hoTen = nguoiDung.getHoTen();
-//                    String userEmail = nguoiDung.getEmail();
+                    String userEmail = nguoiDung.getEmail();
 
                     String userName = (hoTen != null && !hoTen.isEmpty()) ? hoTen : username;
 
                     model.addAttribute("userName", userName);
-//                    model.addAttribute("userEmail", userEmail);
+                    model.addAttribute("userEmail", userEmail);
                 } else {
                     model.addAttribute("userName", username);
-//                    model.addAttribute("userEmail", "");
+                    model.addAttribute("userEmail", "");
                 }
 
                 Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();

@@ -11,30 +11,30 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "SanPham")
+@Table(name = "san_pham")
 public class SanPham {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id_SanPham")
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "Ma_San_Pham", nullable = false)
-    private String maSanPham;
-
-    @Column(name = "Ten_San_Pham", nullable = false)
+//    @Column(name = "ma_san_pham", nullable = false)
+//    private String maSanPham;
+//
+    @Column(name = "ten_san_pham", nullable = false)
     private String tenSanPham;
+//
+//    @Column(name = "ngay_tao")
+//    private Date ngayTao;
+//
+//    @Column(name = "nguoi_tao")
+//    private String nguoiTao;
+//
+//    @Column(name = "lan_nap_nhat_cuoi")
+//    private Date lanCapNhatCuoi;
 
-    @Column(name = "Ngay_Tao")
-    private Date ngayTao;
-
-    @Column(name = "Nguoi_Tao")
-    private String nguoiTao;
-
-    @Column(name = "Lan_Cap_Nhat_Cuoi")
-    private Date lanCapNhatCuoi;
-
-    @Column(name = "TrangThai")
-    private int trangThai;
+//    @Column(name = "TrangThai")
+//    private int trangThai;
 
 }

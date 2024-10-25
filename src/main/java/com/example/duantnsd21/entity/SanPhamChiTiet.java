@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "SanPhamChiTiet")
+@Table(name = "san_pham_chi_tiet")
 public class SanPhamChiTiet {
 
     @Id
