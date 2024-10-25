@@ -94,14 +94,16 @@
         <a class="nav-link" href="#reports" onclick="showSection('reports')">
             <i class="fa fa-bar-chart"></i> Reports
         </a>
+<!--        logou-->
+        <button class="btn btn-outline-danger" onclick="window.location.href='/logout'">Logout</button>
     </nav>
 
     <!-- Main Content -->
     <main class="col-md-12 px-md-4">
         <div id="dashboard" class="content-section">
 
-            <h4 th:text="'Hi ' + ${userName}">Hi Admin</h4>
-            <p>Email: <span th:text="${userEmail}">user@example.com</span></p>
+            <h4 th:text="'Hi ' + ${userName} +' Admin'"></h4>
+<!--            <p>Email: <span th:text="${userEmail}">user@example.com</span></p>-->
 
             <div class="overview-card-wrapper">
                 <div class="overview-card">

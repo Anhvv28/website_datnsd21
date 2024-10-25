@@ -48,7 +48,7 @@ public class AppController {
             if (principal instanceof OAuth2User) {
                 OAuth2User oAuth2User = (OAuth2User) principal;
                 model.addAttribute("userName", oAuth2User.getAttribute("name"));
-                model.addAttribute("userEmail", oAuth2User.getAttribute("email"));
+//                model.addAttribute("userEmail", oAuth2User.getAttribute("email"));
             } else if (principal instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) principal;
                 model.addAttribute("userName", userDetails.getUsername());
@@ -56,7 +56,7 @@ public class AppController {
                 // Fetch additional user details from your database
                 NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
                 if (nguoiDung != null) {
-                    model.addAttribute("userEmail", nguoiDung.getEmail());
+//                    model.addAttribute("userEmail", nguoiDung.getEmail());
                     model.addAttribute("fullName", nguoiDung.getHoTen());
                 }
             }
@@ -68,7 +68,6 @@ public class AppController {
     public String loginForm() {
         return "login-form";
     }
-
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
@@ -110,10 +109,10 @@ public class AppController {
                 // OAuth2 authentication
                 OAuth2User oAuth2User = (OAuth2User) principal;
                 String userName = oAuth2User.getAttribute("name");
-                String userEmail = oAuth2User.getAttribute("email");
+//                String userEmail = oAuth2User.getAttribute("email");
 
                 model.addAttribute("userName", userName);
-                model.addAttribute("userEmail", userEmail);
+//                model.addAttribute("userEmail", userEmail);
 
                 Collection<? extends GrantedAuthority> authorities = oAuth2User.getAuthorities();
                 setRoleAttributes(authorities, model);
@@ -126,15 +125,15 @@ public class AppController {
                 NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(username);
                 if (nguoiDung != null) {
                     String hoTen = nguoiDung.getHoTen();
-                    String userEmail = nguoiDung.getEmail();
+//                    String userEmail = nguoiDung.getEmail();
 
                     String userName = (hoTen != null && !hoTen.isEmpty()) ? hoTen : username;
 
                     model.addAttribute("userName", userName);
-                    model.addAttribute("userEmail", userEmail);
+//                    model.addAttribute("userEmail", userEmail);
                 } else {
                     model.addAttribute("userName", username);
-                    model.addAttribute("userEmail", "");
+//                    model.addAttribute("userEmail", "");
                 }
 
                 Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
