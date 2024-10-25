@@ -1,24 +1,181 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Shoe Store Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        #navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            color: #333;
+            transition: color 0.2s;
+            padding: 10px;
+        }
+        .nav-link:hover {
+            color: #007bff;
+        }
+        .nav-link.active {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .btn-toolbar .btn-group .btn {
+            margin-right: 0.5rem;
+        }
+        .card {
+            border-radius: 0.5rem;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        main {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .border-bottom {
+            border-bottom: 2px solid #e9ecef !important;
+        }
+        .overview-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .overview-card .card-icon {
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        #dashboard .overview-card-wrapper {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 <body>
-<h1 th:text="'Hi ' + ${userName}">Hi Admin</h1>
-<p>Email: <span th:text="${userEmail}">user@example.com</span></p>
+<div class="container-fluid">
+    <!-- Navbar -->
+    <nav id="navbar">
+        <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+            <i class="fa fa-home"></i> Dashboard
+        </a>
+        <a class="nav-link" href="#manage-products" onclick="showSection('manage-products')">
+            <i class="fa fa-shopping-cart"></i> Manage Products
+        </a>
+        <a class="nav-link" href="#manage-customers" onclick="showSection('manage-customers')">
+            <i class="fa fa-users"></i> Manage Customers
+        </a>
+        <a class="nav-link" href="#manage-orders" onclick="showSection('manage-orders')">
+            <i class="fa fa-file-text"></i> Manage Orders
+        </a>
+        <a class="nav-link" href="#manage-discounts" onclick="showSection('manage-discounts')">
+            <i class="fa fa-tags"></i> Manage Discounts
+        </a>
+        <a class="nav-link" href="#reports" onclick="showSection('reports')">
+            <i class="fa fa-bar-chart"></i> Reports
+        </a>
+    </nav>
 
-<!-- Admin Functions -->
-<div sec:authorize="hasRole('ROLE_ADMIN')">
-    <h2>Admin Functions</h2>
-    <!-- Admin-specific content -->
+    <!-- Main Content -->
+    <main class="col-md-12 px-md-4">
+        <div id="dashboard" class="content-section">
+
+            <h4 th:text="'Hi ' + ${userName}">Hi Admin</h4>
+            <p>Email: <span th:text="${userEmail}">user@example.com</span></p>
+
+            <div class="overview-card-wrapper">
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fa fa-cube text-primary"></i>
+                    </div>
+                    <h5>Total Products</h5>
+                    <p>150</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fa fa-shopping-cart text-success"></i>
+                    </div>
+                    <h5>Total Orders</h5>
+                    <p>320</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fa fa-exclamation-circle text-warning"></i>
+                    </div>
+                    <h5>Pending Orders</h5>
+                    <p>45</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fa fa-users text-danger"></i>
+                    </div>
+                    <h5>Total Customers</h5>
+                    <p>200</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Products Section -->
+        <div id="manage-products" class="content-section" style="display: none;">
+            <h2>Manage Products</h2>
+            <!-- Content for managing products -->
+        </div>
+
+        <!-- Manage Customers Section -->
+        <div id="manage-customers" class="content-section" style="display: none;">
+            <h2>Manage Customers</h2>
+            <!-- Content for managing customers -->
+        </div>
+
+        <!-- Manage Orders Section -->
+        <div id="manage-orders" class="content-section" style="display: none;">
+            <h2>Manage Orders</h2>
+            <!-- Content for managing orders -->
+        </div>
+
+        <!-- Manage Discounts Section -->
+        <div id="manage-discounts" class="content-section" style="display: none;">
+            <h2>Manage Discounts</h2>
+            <!-- Content for managing discounts -->
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="content-section" style="display: none;">
+            <h2>Reports</h2>
+            <!-- Content for reports -->
+        </div>
+    </main>
 </div>
 
-<!-- Employee Functions -->
-<div sec:authorize="hasRole('ROLE_EMPLOYEE')">
-    <h2>Employee Functions</h2>
-    <!-- Employee-specific content -->
-</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showSection(sectionId) {
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+    }
+</script>
 </body>
 </html>
