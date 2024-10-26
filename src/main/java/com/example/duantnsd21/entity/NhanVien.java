@@ -39,8 +39,7 @@ public class NhanVien {
     private int trangThai;
 
     @OneToOne
-    @JoinColumn(name = "Nguoi_dung_Id") // Đảm bảo tên cột là 'NguoiDung_Id'
+    @JoinColumn(name = "nguoi_dung_id")
     private NguoiDung nguoiDung;
-
 }
 

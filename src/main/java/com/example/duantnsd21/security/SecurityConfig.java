@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) // Cho phép sử dụng @PreAuthorize
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -45,18 +45,30 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    // Sử dụng constants để lưu trữ các endpoint
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/san-pham/top-selling", "/api/user-info"
+    };
+
+    private static final String[] ADMIN_ENDPOINTS = {
+            "/admin/**", "/api/san-pham/hien-thi"
+    };
+
+    private static final String[] EMPLOYEE_ENDPOINTS = {
+            "/employee/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-//                .authenticationProvider(authenticationProvider())
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/sanpham", "/api/user-info").permitAll()
-                        .requestMatchers("/admin/**","/").hasRole("ADMIN")
-                        .requestMatchers("/employee/**").hasRole("EMPLOYEE")
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(EMPLOYEE_ENDPOINTS).hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authenticationProvider()) // Add this line
+                .authenticationProvider(authenticationProvider())
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login-form")
                         .defaultSuccessUrl("/", true)
