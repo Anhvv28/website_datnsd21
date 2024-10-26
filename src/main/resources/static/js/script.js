@@ -106,26 +106,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button class="card-action-btn" aria-labelledby="card-label-1">
                           <ion-icon name="cart-outline"></ion-icon>
                         </button>
-                        <div class="card-action-tooltip" id="card-label-1">Add to Cart</div>
+                        <div class="card-action-tooltip" id="card-label-1">Thêm Giỏ Hàng</div>
                       </li>
                       <li class="card-action-item">
                         <button class="card-action-btn" aria-labelledby="card-label-2">
                           <ion-icon name="heart-outline"></ion-icon>
                         </button>
-                        <div class="card-action-tooltip" id="card-label-2">Add to Wishlist</div>
+                        <div class="card-action-tooltip" id="card-label-2">Yêu Thích</div>
                       </li>
                       <li class="card-action-item">
                         <button class="card-action-btn" aria-labelledby="card-label-3">
                           <ion-icon name="eye-outline"></ion-icon>
                         </button>
-                        <div class="card-action-tooltip" id="card-label-3">Quick View</div>
-                      </li>
-                      <li class="card-action-item">
-                        <button class="card-action-btn" aria-labelledby="card-label-4">
-                          <ion-icon name="repeat-outline"></ion-icon>
-                        </button>
-                        <div class="card-action-tooltip" id="card-label-4">Compare</div>
-                      </li>
+                        <div class="card-action-tooltip" id="card-label-3">Xem Chi Tiết</div>
+                      </li>            
                     </ul>
                   </figure>
                   <div class="card-content">
