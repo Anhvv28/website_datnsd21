@@ -3,7 +3,7 @@ package com.example.duantnsd21.controller;
 
 import com.example.duantnsd21.entity.SanPham;
 import com.example.duantnsd21.repository.SanPhamRp;
-import com.example.duantnsd21.service.SaPhamService;
+import com.example.duantnsd21.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class SanPhamController {
 
     @Autowired
-    private SaPhamService service;
+    private SanPhamService service;
     @Autowired
     private SanPhamRp productRepository;
 
@@ -39,10 +39,10 @@ public class SanPhamController {
     }
 
     @GetMapping("/top-selling")
-    public ResponseEntity<List<Map<String, Object>>> getTopSellingProductsByBrand(@RequestParam String brandName) {
-        List<Object[]> results = productRepository.findTopSellingProductsByBrand(brandName);
-        List<Map<String, Object>> topSellingProducts = new ArrayList<>();
+    public ResponseEntity<List<Map<String, Object>>> getTopSellingProductsByBrand(@RequestParam(required = false) String brandName) {
+        List<Object[]> results = service.getTopSellingProducts(brandName);
 
+        List<Map<String, Object>> topSellingProducts = new ArrayList<>();
         for (Object[] row : results) {
             Map<String, Object> product = new HashMap<>();
             product.put("tenSanPham", row[0]);
@@ -55,5 +55,6 @@ public class SanPhamController {
 
         return ResponseEntity.ok(topSellingProducts);
     }
+
 
 }

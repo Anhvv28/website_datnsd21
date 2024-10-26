@@ -22,6 +22,18 @@ public interface SanPhamRp extends JpaRepository<SanPham, Integer> {
             "ORDER BY tongSoLuongBan DESC")
     List<Object[]> findTopSellingProductsByBrand(String brandName);
 
+
+    @Query("SELECT sp.tenSanPham, th.ten, SUM(hdct.soLuong) AS tongSoLuongBan, MAX(spct.giaTien), MAX(ha.duongDan) " +
+            "FROM SanPham sp " +
+            "JOIN SanPhamChiTiet spct ON sp.id = spct.sanPham.id " +
+            "JOIN ThuongHieu th ON spct.thuongHieu.id = th.id " +
+            "JOIN HoaDonChiTiet hdct ON spct.id = hdct.sanPhamChiTiet.id " +
+            "LEFT JOIN HinhAnh ha ON spct.id = ha.sanPhamChiTiet.id " +
+            "GROUP BY sp.id, sp.tenSanPham, th.ten " +
+            "ORDER BY tongSoLuongBan DESC")
+    List<Object[]> findAllTopSellingProducts();
+
+
 //    @Query("SELECT sp.tenSanPham, th.ten, SUM(hdct.soLuong) AS tongSoLuongBan, MAX(spct.giaTien), MAX(ha.duongDan) " +
 //            "FROM SanPham sp " +
 //            "JOIN SanPhamChiTiet spct ON sp.id = spct.sanPham.id " +

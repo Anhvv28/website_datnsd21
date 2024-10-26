@@ -8,12 +8,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SaPhamService {
+public class SanPhamService {
 
     @Autowired
     private SanPhamRp sanPhamRp;
 
     public List<SanPham> getAll() {
         return sanPhamRp.findAll();
+    }
+
+    public List<Object[]> getTopSellingProducts(String brandName) {
+        if (brandName == null || brandName.isEmpty() || brandName.equalsIgnoreCase("All")) {
+            return sanPhamRp.findAllTopSellingProducts();
+        } else {
+            return sanPhamRp.findTopSellingProductsByBrand(brandName);
+        }
     }
 }
