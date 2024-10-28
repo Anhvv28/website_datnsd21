@@ -28,6 +28,10 @@
   <!-- 
     - preload banner
   -->
+  <!-- Thêm Toastr CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
+
   <link rel="preload" href="/images/hero-banner.png" as="image">
 
 </head>
@@ -216,9 +220,8 @@
               <div class="collection-card" style="background-image: url('/images/collection-1.jpg')">
                 <h3 class="h4 card-title">Men Collections</h3>
 
-                <a href="#" class="btn btn-secondary">
+                <a href="api/san-pham/index-category?category=nam" class="btn btn-secondary">
                   <span>Explore All</span>
-
                   <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
                 </a>
               </div>
@@ -228,9 +231,8 @@
               <div class="collection-card" style="background-image: url('/images/collection-2.jpg')">
                 <h3 class="h4 card-title">Women Collections</h3>
 
-                <a href="#" class="btn btn-secondary">
+                <a href="api/san-pham/index-category?category=nu" class="btn btn-secondary">
                   <span>Explore All</span>
-
                   <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
                 </a>
               </div>
@@ -240,9 +242,8 @@
               <div class="collection-card" style="background-image: url('/images/collection-3.jpg')">
                 <h3 class="h4 card-title">Sports Collections</h3>
 
-                <a href="#" class="btn btn-secondary">
+                <a href="api/san-pham/index-category?categorycategory=sports" class="btn btn-secondary">
                   <span>Explore All</span>
-
                   <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
                 </a>
               </div>
@@ -353,43 +354,42 @@
         - #CTA
       -->
 
-      <section class="section cta">
+      <section class="section collection">
         <div class="container">
 
-          <ul class="cta-list">
-
+          <ul class="collection-list has-scrollbar">
             <li>
-              <div class="cta-card" style="background-image: url('/images/cta-1.jpg')">
-                <p class="card-subtitle">Adidas Shoes</p>
-
-                <h3 class="h2 card-title">The Summer Sale Off 50%</h3>
-
-                <a href="#" class="btn btn-link">
-                  <span>Shop Now</span>
-
+              <div class="collection-card" style="background-image: url('/images/collection-1.jpg')">
+                <h3 class="h4 card-title">Men Collections</h3>
+                <a href="products.html?category=nam" class="btn btn-secondary">
+                  <span>Explore All</span>
                   <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
                 </a>
               </div>
             </li>
-
             <li>
-              <div class="cta-card" style="background-image: url('../static/images/cta-2.jpg')">
-                <p class="card-subtitle">Nike Shoes</p>
-
-                <h3 class="h2 card-title">Makes Yourself Keep Sporty</h3>
-
-                <a href="#" class="btn btn-link">
-                  <span>Shop Now</span>
-
+              <div class="collection-card" style="background-image: url('/images/collection-2.jpg')">
+                <h3 class="h4 card-title">Women Collections</h3>
+                <a href="products.html?category=nữ" class="btn btn-secondary">
+                  <span>Explore All</span>
                   <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
                 </a>
               </div>
             </li>
-
+            <li>
+              <div class="collection-card" style="background-image: url('/images/collection-3.jpg')">
+                <h3 class="h4 card-title">Sports Collections</h3>
+                <a href="products.html?category=thể thao" class="btn btn-secondary">
+                  <span>Explore All</span>
+                  <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+                </a>
+              </div>
+            </li>
           </ul>
 
         </div>
       </section>
+
 
 
 
@@ -1092,12 +1092,15 @@
     - custom js link
   -->
   <script src="/js/script.js"></script>
+<script>
 
+</script>
   <!-- 
     - ionicon link
   -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </body>
 
 </html>

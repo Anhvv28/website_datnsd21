@@ -2,7 +2,9 @@ package com.example.duantnsd21.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,4 +51,7 @@ public class NguoiDung {
     @OneToOne(mappedBy = "nguoiDung", cascade = CascadeType.ALL)
     private NhanVien nhanVien;
 
+    @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Để tránh vòng lặp khi serialize
+    private List<YeuThich> yeuThichList = new ArrayList<>();
 }

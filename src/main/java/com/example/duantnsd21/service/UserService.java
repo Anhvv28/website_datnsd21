@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -40,9 +41,10 @@ public class UserService {
             setRoleAttributes(oAuth2User.getAuthorities(), model);
         } else if (principal instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) principal;
-            NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
+            Optional<NguoiDung> optionalNguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
 
-            if (nguoiDung != null) {
+            if (optionalNguoiDung.isPresent()) {
+                NguoiDung nguoiDung = optionalNguoiDung.get();
                 model.addAttribute("userName", nguoiDung.getHoTen() != null ? nguoiDung.getHoTen() : userDetails.getUsername());
                 model.addAttribute("userEmail", nguoiDung.getEmail());
                 if (nguoiDung.getNhanVien() != null) {
@@ -68,8 +70,9 @@ public class UserService {
             UserDetails userDetails = (UserDetails) principal;
             userInfo.put("hoTen", userDetails.getUsername());
 
-            NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
-            if (nguoiDung != null) {
+            Optional<NguoiDung> optionalNguoiDung = nguoiDungRepository.findByTaiKhoan(userDetails.getUsername());
+            if (optionalNguoiDung.isPresent()) {
+                NguoiDung nguoiDung = optionalNguoiDung.get();
                 userInfo.put("email", nguoiDung.getEmail());
                 userInfo.put("hoTen", nguoiDung.getHoTen());
             }
@@ -87,10 +90,12 @@ public class UserService {
         return nguoiDungRepository.save(nguoiDung);
     }
 
+
     private void setRoleAttributes(Collection<? extends GrantedAuthority> authorities, Model model) {
         boolean isAdmin = authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         boolean isEmployee = authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_EMPLOYEE"));
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("isEmployee", isEmployee);
     }
+
 }

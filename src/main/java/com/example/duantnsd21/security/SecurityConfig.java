@@ -1,7 +1,6 @@
 package com.example.duantnsd21.security;
 
-import com.example.duantnsd21.service.CustomAuthenticationSuccessHandler;
-import com.example.duantnsd21.service.CustomOAuth2UserService;
+import com.example.duantnsd21.filter.UserExistenceCheckFilter;
 import com.example.duantnsd21.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,13 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true) // Cho phép sử dụng @PreAuthorize
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -27,27 +27,24 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    // Password encoder bean
+    @Autowired
+    private UserExistenceCheckFilter userExistenceCheckFilter;
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
         return NoOpPasswordEncoder.getInstance();
     }
 
-    // Authentication provider bean
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 
-    // Sử dụng constants để lưu trữ các endpoint
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/san-pham/top-selling", "/api/user-info"
+            "/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/san-pham/top-selling",
+            "/api/san-pham/category","api/san-pham/index-category", "/api/user-info","/oauth2/**"
     };
 
     private static final String[] ADMIN_ENDPOINTS = {
@@ -87,10 +84,20 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll());
+                        .deleteCookies("JSESSIONID", "authToken")
+                        .permitAll()
+                );
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Thêm dòng này
+//        http.addFilterBefore(userExistenceCheckFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
     }
 
 

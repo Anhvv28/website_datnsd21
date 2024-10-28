@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Listing</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Thêm CSS cần thiết -->
+</head>
+<body>
+<div class="container">
+    <h1>Product Listing</h1>
+    <div class="product-list" id="product-list">
+        <!-- Sản phẩm sẽ được tải động tại đây -->
+    </div>
+    <div class="pagination" id="pagination">
+        <!-- Phân trang sẽ được tải động tại đây -->
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category') || 'all';
+        let currentPage = 0;
+        const pageSize = 8;
+
+        function loadProducts(page) {
+            fetch(`/api/san-pham/category?category=${category}&page=${page}&size=${pageSize}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Hiển thị danh sách sản phẩm
+                    const productList = document.getElementById('product-list');
+                    productList.innerHTML = '';
+
+                    data.content.forEach(product => {
+                        const productHTML = `
+                        <div class="product-item">
+                            <h3>${product.tenSanPham}</h3>
+                            <p>Thương hiệu: ${product.thuongHieu}</p>
+                            <p>Giá: ${product.giaTien} VND</p>
+                            <img src="${product.hinhAnh || '/images/default.jpg'}" alt="${product.tenSanPham}" />
+                        </div>
+                    `;
+                        productList.innerHTML += productHTML;
+                    });
+
+                    // Hiển thị phân trang
+                    const pagination = document.getElementById('pagination');
+                    pagination.innerHTML = '';
+                    for (let i = 0; i < data.totalPages; i++) {
+                        const pageButton = `<button onclick="loadProducts(${i})">${i + 1}</button>`;
+                        pagination.innerHTML += pageButton;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching products:', error);
+                });
+        }
+
+        loadProducts(currentPage);
+    });
+
+
+
+
+</script> <!-- Thêm JavaScript cần thiết -->
+<script src="/js/script.js"></script>
+</body>
+</html>

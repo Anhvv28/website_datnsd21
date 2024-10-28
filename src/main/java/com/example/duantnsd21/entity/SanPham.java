@@ -1,10 +1,12 @@
 package com.example.duantnsd21.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -26,6 +28,7 @@ public class SanPham {
     @Column(name = "ten_san_pham", nullable = false)
     private String tenSanPham;
 //
+
     @Column(name = "ngay_tao")
     private Date ngayTao;
 
@@ -38,6 +41,10 @@ public class SanPham {
     @Column(name = "trang_thai")
     private int trangThai;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL)
-    private List<SanPhamChiTiet> sanPhamChiTiet;
+
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<SanPhamChiTiet> sanPhamChiTiet= new ArrayList<>();
+
+
 }

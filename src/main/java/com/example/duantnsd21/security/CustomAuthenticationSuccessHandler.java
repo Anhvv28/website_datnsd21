@@ -1,4 +1,4 @@
-package com.example.duantnsd21.service;
+package com.example.duantnsd21.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +20,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        // Log the authorities
-        System.out.println("User Authorities: " + userDetails.getAuthorities());
-
         String redirectURL = "/";
         if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             redirectURL = "/admin";
@@ -30,7 +27,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             redirectURL = "/employee";
         }
 
-        System.out.println("Redirecting to: " + redirectURL);
         response.sendRedirect(redirectURL);
     }
 }

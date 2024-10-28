@@ -23,26 +23,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
 
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Attempting to load user: " + username);
-        NguoiDung nguoiDung = nguoiDungRepository.findByTaiKhoan(username);
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        NguoiDung nguoiDung = nguoiDungRepository.findByEmail(usernameOrEmail)
+                .orElseGet(() -> nguoiDungRepository.findByTaiKhoan(usernameOrEmail)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found")));
 
-        if (nguoiDung == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        // Collect authorities based on user's role
         Set<GrantedAuthority> authorities = new HashSet<>();
 
-        NhanVien nhanVien = nguoiDung.getNhanVien();
-
-        if (nhanVien != null && nhanVien.getVaiTro() != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + nhanVien.getVaiTro().toUpperCase()));
+        if (nguoiDung.getNhanVien() != null && nguoiDung.getNhanVien().getVaiTro() != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + nguoiDung.getNhanVien().getVaiTro().toUpperCase()));
         } else {
-            throw new UsernameNotFoundException("User role not found");
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
-
 
         return new org.springframework.security.core.userdetails.User(
                 nguoiDung.getTaiKhoan(),

@@ -1,5 +1,4 @@
 package com.example.duantnsd21.entity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,23 +11,19 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "hinh_anh")
-public class HinhAnh {
+@Table(name = "mau_sac")
+public class MauSac {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spct_id")
-    @JsonBackReference
-    private SanPhamChiTiet sanPhamChiTiet;
+    @Column(name = "ten", nullable = false)
+    private String ten;
 
-    @Column(name = "ten_anh")
-    private String tenAnh;
-
-    @Column(name = "duong_dan")
-    private String duongDan;
+    @Column(name = "trang_thai")
+    private int trangThai;
 
     @Column(name = "ngay_tao")
     @Temporal(TemporalType.TIMESTAMP)
@@ -43,9 +38,4 @@ public class HinhAnh {
     @Column(name = "lan_cap_nhat_cuoi")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lanCapNhatCuoi;
-
-    @Column(name = "trang_thai")
-    private Integer trangThai;
-
-
 }
