@@ -1,6 +1,8 @@
 package com.example.duantnsd21.service;
 
 import com.example.duantnsd21.entity.SanPham;
+import com.example.duantnsd21.entity.SanPhamChiTiet;
+import com.example.duantnsd21.repository.SanPhamChiTietRepository;
 import com.example.duantnsd21.repository.SanPhamRp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,10 @@ public class SanPhamService {
 
     @Autowired
     private SanPhamRp sanPhamRp;
+
+    @Autowired
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
+
 
     public List<SanPham> getAll() {
         if (sanPhamRp == null) {
@@ -40,4 +46,7 @@ public class SanPhamService {
 
     }
 
+    public List<SanPhamChiTiet> getSanPhamChiTietByThuongHieu(String brandName) {
+        return sanPhamChiTietRepository.findByThuongHieu_Ten(brandName);
+    }
 }

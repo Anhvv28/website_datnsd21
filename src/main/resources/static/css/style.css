@@ -7,6 +7,86 @@
  */
 
 
+#chatbot-icon {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  background: #007bff;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#chatbot-icon img {
+  width: 40px;
+  height: 40px;
+}
+
+#chatbot-box {
+  position: fixed;
+  bottom: 160px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+#chatbot-box:hover {
+ color: #007bff;
+}
+
+#chatbot-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding-right: 10px;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: #007bff;
+  color: #fff;
+  padding: 8px;
+  border-radius: 10px;
+  max-width: 80%;
+  margin: 5px 0;
+  text-align: left;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background: #f1f1f1;
+  color: #333;
+  padding: 8px;
+  border-radius: 10px;
+  max-width: 80%;
+  margin: 5px 0;
+  text-align: left;
+}
+
+#chatbot-input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  width: calc(100% - 50px);
+}
+
+#chatbot-send-btn {
+  border: none;
+  background: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
 
 
 
@@ -548,18 +628,37 @@ body {
   align-items: center;
 }
 
-.hero-title { margin-bottom: 10px; }
+.hero-content {
+  margin-left: 0; /* Giữ nội dung sát mép trái */
+  width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
+  padding-left: 40px; /* Để điều chỉnh khoảng cách từ cạnh trái */
+}
 
-.hero-title > strong { display: block; }
+.text-background {
+  background-color: rgba(0, 0, 0, 0.3); /* Màu nền với độ mờ (black with 70% opacity) */
+  padding: 20px; /* Khoảng cách bên trong */
+  border-radius: 10px; /* Bo tròn các góc để tạo cảm giác mềm mại */
+}
+
+.hero-title {
+  margin-bottom: 5px;
+  color: white;
+}
+
+.hero-title > strong {
+  display: block;
+  color: white;
+}
 
 .hero-text {
-  color: var(--onyx);
+  color: white;
   font-family: var(--ff-roboto);
   font-size: var(--fs-8);
   line-height: 1.8;
   max-width: 46ch;
   margin-bottom: 25px;
 }
+
 
 
 

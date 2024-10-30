@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nike Products</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+</head>
+<style>
+    .product-container {
+        margin-top: 20px;
+        width: 1520px;  /* Chiều rộng cố định của container */
+        /*height: 6208px; !* Chiều cao cố định của container *!*/
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Hiển thị 4 sản phẩm trên mỗi hàng */
+        gap: 20px; /* Khoảng cách giữa các sản phẩm */
+        padding: 20px;
+        margin: 0 auto; /* Căn giữa container so với màn hình */
+        overflow: hidden; /* Đảm bảo không có cuộn */
+        box-sizing: border-box; /* Tính cả padding vào chiều rộng, chiều cao */
+        background-color: #f8f8f8; /* Màu nền để tạo sự tương phản với sản phẩm */
+    }
+
+    .product-item {
+        width: 374px;  /* Chiều rộng cố định cho mỗi sản phẩm */
+        height: 506px; /* Chiều cao cố định cho mỗi sản phẩm */
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .product-item:hover {
+        transform: scale(1.05); /* Tăng nhẹ kích thước khi hover để tạo hiệu ứng */
+    }
+
+    .product-item img {
+        width: 372px; /* Đặt chiều rộng cố định cho hình ảnh */
+        height: 372px; /* Đặt chiều cao cố định cho hình ảnh */
+        object-fit: cover; /* Đảm bảo ảnh không bị méo khi thay đổi kích thước */
+    }
+
+    .product-content {
+        width: 100%; /* Chiếm toàn bộ chiều rộng của sản phẩm */
+        padding: 10px;
+    }
+
+    .product-item h3 {
+        font-size: 1em; /* Kích thước chữ cho tên sản phẩm */
+        margin: 10px 0 5px;
+    }
+
+    .product-item p {
+        font-size: 0.9em; /* Kích thước chữ cho mô tả và giá */
+        margin: 5px 0;
+    }
+
+    .product-item button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .product-item button:hover {
+        background-color: #0056b3; /* Màu nền khi hover nút */
+    }
+    .image-container {
+        position: relative;
+        width: 372px;
+        height: 372px;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .additional-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 0; /* Ẩn ảnh phụ */
+    }
+
+    .image-container:hover .main-image {
+        opacity: 0; /* Ẩn ảnh chính khi di chuột vào */
+    }
+
+    .image-container:hover .additional-image {
+        opacity: 1; /* Hiển thị ảnh phụ khi di chuột vào */
+    }
+
+
+</style>
+<body>
+
+<header class="header" data-header>
+    <div class="container">
+
+        <div class="overlay" data-overlay></div>
+
+        <a href="#" class="logo">
+            <img src="/images/twitter1.png" width="60" height="50" alt="">
+        </a>
+
+        <button class="nav-open-btn" data-nav-open-btn aria-label="Open Menu">
+            <ion-icon name="menu-outline"></ion-icon>
+        </button>
+
+        <nav class="navbar" data-navbar>
+
+            <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+            <a href="/" class="logo">
+                <img src="/images/twitter1.png" width="60" height="60" alt="">
+            </a>
+
+            <ul class="navbar-list">
+
+                <li class="navbar-item">
+                    <a href="/" class="navbar-link">Trang Chủ</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="/api/san-pham/nike-product" class="navbar-link">Nike</a>
+
+
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Adidas</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Hãng Khác</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">FLASH SALE</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Hỗ Trợ</a>
+                </li>
+
+            </ul>
+
+            <ul class="nav-action-list">
+
+                <li>
+                    <button class="nav-action-btn">
+                        <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+                        <span class="nav-action-text">Search</span>
+                    </button>
+                </li>
+
+                <!-- Nút Login/Register -->
+                <li id="loginItem" th:if="${userName == null}">
+                    <a href="/login-form" class="nav-action-btn">
+                        <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                        <span class="nav-action-text">Login / Register</span>
+                    </a>
+                </li>
+
+                <!-- Nút Account -->
+                <li id="accountItem" th:if="${userName != null}">
+                    <a class="nav-action-btn" data-toggle="modal" data-target="#accountModal">
+                        <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                        <span class="nav-action-text">Account</span>
+                    </a>
+                </li>
+
+                <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content account-modal text-center">
+                            <div class="modal-header d-flex justify-content-between align-items-center">
+                                <h4 class="modal-title">
+                                    <strong>HI, </strong><span th:text="${userName}">User Name</span>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="account-info mb-4">
+                                    <p><strong>Email:</strong> <span th:text="${userEmail}">user@example.com</span></p>
+                                    <a style="margin-top: 5px"  href="/admin"Quản Lý Website class="btn btn-secondary" th:if="${vaiTro == 'Admin' || vaiTro == 'EMPLOYEE'}">Manager Website </a>
+                                </div>
+                                <div class="modal-footer d-flex flex-column gap-3">
+                                    <a href="/forgot-password" class="btn btn-outline-dark btn-lg w-100">Quên mật khẩu?</a>
+
+                                    <a href="/logout" class="btn btn-danger btn-lg w-100">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <li>
+                    <button class="nav-action-btn">
+                        <ion-icon name="heart-outline" aria-hidden="true"></ion-icon>
+
+                        <span class="nav-action-text">Wishlist</span>
+
+                        <data class="nav-action-badge" value="5" aria-hidden="true">5</data>
+                    </button>
+                </li>
+
+                <li>
+                    <button class="nav-action-btn">
+                        <ion-icon name="bag-outline" aria-hidden="true"></ion-icon>
+
+                        <data class="nav-action-text" value="318.00">Basket: <strong>$318.00</strong></data>
+
+                        <data class="nav-action-badge" value="4" aria-hidden="true">4</data>
+                    </button>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+</header>
+
+<main>
+    <div class="product-container">
+    <div class="product-list">
+    </div>
+    </div>
+</main>
+
+<script src="/js/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function loadProductsByBrand(brandName) {
+            let apiUrl = `/api/san-pham/by-brand?brandName=${brandName}`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Lỗi khi lấy dữ liệu từ API');
+                    }
+                    return response.json();
+                })
+                .then(products => {
+                    const productContainer = document.querySelector('.product-list');
+                    productContainer.innerHTML = ''; // Xóa toàn bộ sản phẩm hiện tại
+
+                    if (products.length === 0) {
+                        productContainer.innerHTML = '<p>Không có sản phẩm nào thuộc thương hiệu này.</p>';
+                    } else {
+                        products.forEach(product => {
+                            const tenSanPham = product.sanPham?.tenSanPham || 'Tên sản phẩm không xác định';
+                            const giaTien = product.giaTien || 'Giá không có sẵn';
+                            const mauSac = product.mauSac?.ten || 'Không có màu sắc';
+                            const mainImage = product.hinhAnh?.[0]?.duongDan || 'default.jpg';
+                            const additionalImages = product.hinhAnh.slice(1) || []; // Các ảnh khác
+
+                            const additionalImagesHTML = additionalImages.map(img => `<img src="${img.duongDan}" alt="${tenSanPham} - ảnh khác" class="additional-image" style="display: none;">`).join('');
+
+                            const productHTML = `
+                            <div class="product-item">
+                              <div class="product-card">
+                                <div class="image-container">
+                                  <img src="${mainImage}" alt="${tenSanPham}" class="main-image">
+                                  ${additionalImagesHTML}
+                                </div>
+                                <div class="product-content">
+                                  <h3>${tenSanPham}</h3>
+                                  <p>Giá: ${giaTien} VND</p>
+                                  <p>Màu sắc: ${mauSac}</p>
+                                </div>
+                              </div>
+                            </div>
+                        `;
+                            productContainer.insertAdjacentHTML('beforeend', productHTML);
+                        });
+
+                        document.querySelectorAll('.image-container').forEach(container => {
+                            const mainImage = container.querySelector('.main-image');
+                            const additionalImages = container.querySelectorAll('.additional-image');
+
+                            container.addEventListener('mouseover', () => {
+                                if (additionalImages.length > 0) {
+                                    mainImage.style.display = 'none';
+                                    additionalImages[0].style.display = 'block';
+                                }
+                            });
+
+                            container.addEventListener('mouseout', () => {
+                                if (additionalImages.length > 0) {
+                                    mainImage.style.display = 'block';
+                                    additionalImages[0].style.display = 'none';
+                                }
+                            });
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải sản phẩm:', error);
+                    const productContainer = document.querySelector('.product-list');
+                    productContainer.innerHTML = '<p>Không thể tải sản phẩm do có lỗi xảy ra.</p>';
+                });
+        }
+
+        // Tải sản phẩm của Nike khi trang được tải
+        loadProductsByBrand('Nike');
+    });
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+</body>
+</html>

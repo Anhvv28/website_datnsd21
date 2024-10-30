@@ -43,8 +43,9 @@ public class SecurityConfig {
     }
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/san-pham/top-selling",
-            "/api/san-pham/category","api/san-pham/index-category", "/api/user-info","/oauth2/**"
+            "/", "/css/**", "/js/**", "/images/**", "/login-form", "/api/san-pham/top-selling","/favicon.png",
+            "/api/san-pham/category","api/san-pham/index-category", "/api/user-info","/oauth2/**","/api/chatbot", "/chatbot", "/other-open-endpoints",
+            "/api/san-pham/nike-product"
     };
 
     private static final String[] ADMIN_ENDPOINTS = {

@@ -58,13 +58,13 @@ $(document).ready(function () {
   });
 
     if ($("#accountItem").length && $("#accountModal").length) {
-      console.log("#accountItem và #accountModal đã tồn tại");
+      // console.log("#accountItem và #accountModal đã tồn tại");
       $("#accountItem a").on("click", function (event) {
         event.preventDefault();
         $("#accountModal").modal('show');
       });
     } else {
-      console.log("#accountItem hoặc #accountModal không tồn tại");
+      // console.log("#accountItem hoặc #accountModal không tồn tại");
     }
 
 });
@@ -314,6 +314,97 @@ document.addEventListener('DOMContentLoaded', function () {
   // Load top-selling products on page load
   loadTopSellingProducts('All');
 });
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Elements for the chatbot interface
+  const chatbotIcon = document.getElementById('chatbot-icon');
+  const chatbotBox = document.getElementById('chatbot-box');
+  const chatbotMessages = document.getElementById('chatbot-messages');
+  const chatbotInput = document.getElementById('chatbot-input');
+  const chatbotSendButton = document.getElementById('chatbot-send-btn');
+
+  // Hide the chatbot box by default
+  chatbotBox.style.display = 'none';
+
+  // Show the chatbot box when the icon is clicked
+  chatbotIcon.addEventListener('click', () => {
+    if (chatbotBox.style.display === 'none') {
+      chatbotBox.style.display = 'flex';
+    } else {
+      chatbotBox.style.display = 'none';
+    }
+  });
+
+  // Function to send message to chatbot
+  function sendMessageToChatbot(userMessage) {
+    // Create a user message element
+    const userMessageElement = document.createElement('div');
+    userMessageElement.classList.add('user-message');
+    userMessageElement.textContent = userMessage;
+    chatbotMessages.appendChild(userMessageElement);
+
+    // Scroll to the latest message
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+    // Send the message to the backend API
+    fetch('/api/chatbot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: userMessage })
+    })
+        .then(response => response.json())
+        .then(data => {
+          // Create a bot message element for the reply
+          const botMessageElement = document.createElement('div');
+          botMessageElement.classList.add('bot-message');
+          botMessageElement.textContent = data.reply; // Using 'reply' field returned by the backend
+          chatbotMessages.appendChild(botMessageElement);
+
+          // Scroll to the latest message
+          chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Display an error message to the user
+          const errorMessageElement = document.createElement('div');
+          errorMessageElement.classList.add('bot-message');
+          errorMessageElement.textContent = 'Sorry, something went wrong.';
+          chatbotMessages.appendChild(errorMessageElement);
+          chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        });
+  }
+
+  // Handle the send button click event
+  chatbotSendButton.addEventListener('click', () => {
+    const userMessage = chatbotInput.value.trim();
+    if (userMessage !== '') {
+      sendMessageToChatbot(userMessage);
+      chatbotInput.value = ''; // Clear input field after sending the message
+    }
+  });
+
+  // Handle enter key press in the input field to send a message
+  chatbotInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      chatbotSendButton.click();
+    }
+  });
+});
+
+
+
+
+
+
 
 
 

@@ -40,4 +40,8 @@ public interface SanPhamRp extends JpaRepository<SanPham, Integer> {
     @Query("SELECT sp FROM SanPham sp JOIN SanPhamChiTiet spct ON sp.id = spct.sanPham.id " +
             "WHERE LOWER(spct.gioiTinh) = LOWER(:gioiTinh)")
     Page<SanPham> findByCategory(@Param("gioiTinh") String gioiTinh, Pageable pageable);
+
+    @Query("SELECT DISTINCT sp FROM SanPham sp JOIN sp.sanPhamChiTiet spct WHERE spct.thuongHieu.ten = :brandName")
+    List<SanPham> findByThuongHieu_Ten(@Param("brandName") String brandName);
+
 }

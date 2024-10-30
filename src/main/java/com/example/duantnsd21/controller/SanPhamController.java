@@ -2,6 +2,9 @@ package com.example.duantnsd21.controller;
 
 
 import com.example.duantnsd21.entity.SanPham;
+import com.example.duantnsd21.entity.SanPhamChiTiet;
+import com.example.duantnsd21.entity.SanPhamDTO;
+import com.example.duantnsd21.repository.SanPhamChiTietRepository;
 import com.example.duantnsd21.repository.SanPhamRp;
 import com.example.duantnsd21.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,8 @@ public class SanPhamController {
     @Autowired
     private SanPhamService service;
 
+    @Autowired
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
 
     @GetMapping("/hien-thi")
     @PreAuthorize("hasRole('ADMIN')")
@@ -42,6 +47,7 @@ public class SanPhamController {
         }
 
     }
+
 
     @GetMapping("/top-selling")
     public ResponseEntity<List<Map<String, Object>>> getTopSellingProductsByBrand(@RequestParam(required = false) String brandName) {
@@ -73,4 +79,11 @@ public class SanPhamController {
         Page<SanPham> productsPage = service.findProductsByCategory(category, PageRequest.of(page, size));
         return new ResponseEntity<>(productsPage, HttpStatus.OK);
     }
+
+    @GetMapping("/by-brand")
+    public ResponseEntity<List<SanPhamChiTiet>> getSanPhamByThuongHieu(@RequestParam String brandName) {
+        List<SanPhamChiTiet> sanPhamChiTietList = service.getSanPhamChiTietByThuongHieu(brandName);
+        return ResponseEntity.ok(sanPhamChiTietList);
+    }
+
 }

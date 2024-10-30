@@ -54,4 +54,9 @@ public class AppController {
         }
         return "redirect:/login-form";
     }
+
+    @GetMapping("/api/san-pham/nike-product")
+    public String nike() {
+        return "nike-product";
+    }
 }
