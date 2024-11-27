@@ -160,13 +160,13 @@ public class DBGenerator implements CommandLineRunner {
         // Account
         Account nhanVien1 = new Account();
         nhanVien1.setName("Vu Viet Anh");
-        nhanVien1.setBirthday(new Date(01, 03, 03));
+        nhanVien1.setBirthday(new Date(2001, 03, 03));
         nhanVien1.setAvatar("");
         nhanVien1.setCccd("033201005434");
-        nhanVien1.setEmail("admin@gmail.com");
+        nhanVien1.setEmail("anhvv28@fpt.com");
         nhanVien1.setAccountRoles(AccountRoles.ROLE_ADMIN);
         nhanVien1.setGender("Nam");
-        nhanVien1.setPassword(new BCryptPasswordEncoder().encode("123456"));
+        nhanVien1.setPassword(new BCryptPasswordEncoder().encode("admin"));
         nhanVien1.setPhoneNumber("0965699901");
         nhanVien1.setUsername("anhvv28");
         nhanVien1.setRole(nhanVien);

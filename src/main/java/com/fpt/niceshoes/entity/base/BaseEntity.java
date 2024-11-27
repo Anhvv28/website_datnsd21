@@ -42,14 +42,14 @@ public abstract class BaseEntity {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         createAt = LocalDateTime.now();
         updateAt = LocalDateTime.now();
-        createBy = authentication != null ? authentication.getName() : "NiceShoes";
-        updateBy = authentication != null ? authentication.getName() : "NiceShoes";
+        createBy = authentication != null ? authentication.getName() : "InnoString Stride";
+        updateBy = authentication != null ? authentication.getName() : "InnoString Stride";
         deleted = false;
     }
     @PreUpdate
     public void preUpdate(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         updateAt = LocalDateTime.now();
-        updateBy = authentication != null ? authentication.getName() : "NiceShoes";
+        updateBy = authentication != null ? authentication.getName() : "InnoString Stride";
     }
 }

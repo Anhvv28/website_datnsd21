@@ -77,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
             if (request.getAvatar() != null)
                 accountSave.setAvatar(String.valueOf(cloudinaryUtils.uploadSingleImage(request.getAvatar(), "account")));
 //            Send Mail
-            String emailContent = "Chào " + accountSave.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống Nice Shoes Store\n" + "Tài khoản của bạn là: " + accountSave.getUsername() + "\n" + "Mật khẩu đăng nhập là: " + accountSave.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
+            String emailContent = "Chào " + accountSave.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống InnString Stride\n" + "Tài khoản của bạn là: " + accountSave.getUsername() + "\n" + "Mật khẩu đăng nhập là: " + accountSave.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
             mailUtils.sendEmail(accountSave.getEmail(), "Thư xác thực tài khoản", emailContent);
         }
         return accountSave;

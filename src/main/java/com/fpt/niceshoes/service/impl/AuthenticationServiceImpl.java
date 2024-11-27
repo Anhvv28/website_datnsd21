@@ -51,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (accountRepository.existsByPhoneNumberAndPhoneNumberNot(signUpRequets.getPhoneNumber(), ""))
             throw new RestApiException("SDT đã tồn tại!");
         accountRepository.save(account);
-        String emailContent = "Chào " + signUpRequets.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống Nice Shoes Store\n" + "Tài khoản của bạn là: " + signUpRequets.getEmail() + "\n" + "Mật khẩu đăng nhập là: " + signUpRequets.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
+        String emailContent = "Chào " + signUpRequets.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống InnoString Stride  \n" + "Tài khoản của bạn là: " + signUpRequets.getEmail() + "\n" + "Mật khẩu đăng nhập là: " + signUpRequets.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
         mailUtils.sendEmail(signUpRequets.getEmail(), "Thư xác thực tài khoản", emailContent);
         return "Người dùng đã được thêm vào hệ thống";
     }
