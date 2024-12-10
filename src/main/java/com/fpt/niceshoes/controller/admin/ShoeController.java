@@ -42,6 +42,7 @@ public class ShoeController {
         return shoeService.getAll(request);
     }
 
+
     @GetMapping("/{id}")
     public Shoe getOne(@PathVariable Long id) {
         return shoeService.getOne(id);

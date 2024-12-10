@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -581,4 +582,9 @@ public class BillServiceImpl implements BillService {
         }
         return new ResponseObject(billDetail);
     }
+
+    public BigDecimal getTotalRefundAmount() {
+        return billRepository.calculateTotalRefundAmount(Arrays.asList(7, 8));
+    }
+
 }

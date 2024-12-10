@@ -18,4 +18,5 @@ public class PromotionRequest extends PageableRequest {
     private LocalDateTime endDate;
     private Integer status;
     private List<Long> productDetails;
+
 }

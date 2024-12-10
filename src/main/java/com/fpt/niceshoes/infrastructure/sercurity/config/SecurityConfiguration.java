@@ -39,7 +39,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
 
-                        request -> request.requestMatchers("/login-v2/**", "/client/**", "/api/vn-pay/**").permitAll()
+                        request -> request.requestMatchers("/login-v2/**", "/client/**", "/api/vn-pay/**","/api/bill/status").permitAll()
+                                .requestMatchers("/api/chat/**").permitAll()
                                 .requestMatchers("/api/**").hasAnyRole("ADMIN","EMLOYEE")
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
