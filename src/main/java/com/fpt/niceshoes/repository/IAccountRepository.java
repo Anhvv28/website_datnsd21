@@ -27,7 +27,7 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
             a.email as email,a.avatar as avatar,a.gender as gender,a.birthday as birthday,
             a.phonenumber as phoneNumber,
             a.create_at as createAt,
-            a.deleted as status,
+            a.deleted as deleted,
             ROW_NUMBER() OVER(ORDER BY a.create_at DESC) AS indexs
             from Account a
             left join role r on r.id = a.role_id
