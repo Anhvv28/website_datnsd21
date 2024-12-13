@@ -37,6 +37,7 @@ const ItemInCart = ({ id, quantity }: CartItemProps) => {
       setInfoShoe(res?.data?.data);
     }
   };
+  
   useEffect(() => {
     getDetailShoeWithId();
   }, [id]);

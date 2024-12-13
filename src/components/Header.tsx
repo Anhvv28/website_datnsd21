@@ -230,8 +230,8 @@ const Header = () => {
               <div className="w-[8%] h-fit">
                 <a href="/" className="flex items-center w-fit ">
                   <LazyLoadImage
-                    // src={Images.logo}
-                    className="w-auto object-cover h-[60px]"
+                    src="black.png"
+                    className="w-auto object-cover h-[80px]"
                   />
                 </a>
               </div>

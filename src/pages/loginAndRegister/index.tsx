@@ -38,7 +38,7 @@ const FormLogin = ({
                   src={Images.iconLogo}
                   alt="logo"
                 />
-                NiceShoes
+                InnoString Stride
               </a>
               <div className="w-full bg-white rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0  ">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -140,7 +140,7 @@ const FormLogin = ({
                   src={Images.iconLogo}
                   alt="logo"
                 />
-                NiceShoes
+                InnoString Stride
               </a>
               <div className="w-full bg-white rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0  -gray-700 mb-4">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -259,7 +259,7 @@ const FormLogin = ({
                   src={Images.iconLogo}
                   alt="logo"
                 />
-                NiceShoes
+                InnoString Stride
               </a>
               <div className="w-full bg-white rounded-lg shadow ">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">

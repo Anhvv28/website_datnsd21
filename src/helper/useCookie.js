@@ -51,7 +51,14 @@ export const deleteUserToken = () => {
   setCookie("userToken", "", 1);
   setCookie("userToken1", "", 1);
 };
-
+export const deleteCookie = (name) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+export const handleLogout = () => {
+  deleteCookie("access_token");
+  deleteCookie("refresh_token");
+  // Các cookie khác nếu có
+};
 export const getUserFromCookie = () => {
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -62,6 +69,7 @@ export const getUserFromCookie = () => {
   const token = getCookie("customerToken");
   if (token) {
     const decodedToken = jwtDecode(token);
+    console.log("Decoded Token:", decodedToken);
     const user = {
       id: decodedToken?.id,
       email: decodedToken?.email,

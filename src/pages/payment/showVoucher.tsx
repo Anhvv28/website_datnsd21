@@ -214,7 +214,7 @@ const ShowVoucher = ({
               <p className="text-center text-sm my-2">Không có voucher</p>
             )}
             <div className="text-sm font-medium  bg-slate-200 px-2 py-2">
-              NiceShoes Voucher
+              InnoString Stride Voucher
             </div>
             {!!voucher?.length ? (
               voucher.map((voucher, index) => (

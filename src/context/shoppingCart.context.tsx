@@ -64,6 +64,11 @@ type ShoppingCartContext = {
 };
 
 const ShoppingCartContext = createContext({} as ShoppingCartContext);
+const handleError = (error: any) => {
+  const message =
+    error?.response?.data || error?.message || "Đã xảy ra lỗi. Vui lòng thử lại.";
+  toast.error(message);
+};
 
 export function useShoppingCart() {
   return useContext(ShoppingCartContext);
@@ -191,31 +196,15 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
           },
         });
         if (res.status) {
-          toast.success("Thêm thành công");
-        } else {
-          return;
+          toast.success("Thêm sản phẩm vào giỏ hàng thành công.");
+          getListDetailCart(); // Đồng bộ lại giỏ hàng sau khi thêm sản phẩm
         }
       } catch (error) {
-        if (typeof error === "string") {
-          // Nếu error là một chuỗi, giả sử đó là một thông báo lỗi từ server
-          toast.error(error);
-        } else if (error instanceof Error) {
-          // Nếu error là một đối tượng Error và có response
-          const customError = error as CustomError;
-          if (customError.response && customError.response.data) {
-            toast.error(customError.response.data);
-          } else {
-            toast.error(customError.message);
-          }
-        } else {
-          // Trường hợp khác, hiển thị một thông báo mặc định
-          toast.error("Thất bại. Vui lòng thử lại sau.");
-        }
-      } finally {
-        getListDetailCart();
+        handleError(error); // Xử lý lỗi
       }
     }
   };
+  
   const removeFromCartUser = async (idDetailCart: number) => {
     try {
       const res = await axios({

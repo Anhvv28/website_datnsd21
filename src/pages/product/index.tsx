@@ -100,7 +100,7 @@ const ProductPage = () => {
     return (
       <div className="w-[70%] mx-auto">
         <p className="font-normal">
-          Chính sách trao đổi tại <span className="font-bold">NiceShoes</span>
+          Chính sách trao đổi tại <span className="font-bold">InnoString Stride</span>
         </p>
         <p className="text-red-600 font-semibold">
           <span className="underline">Lưu ý</span>: Trong thời gian khuyến mãi,
@@ -111,13 +111,13 @@ const ProductPage = () => {
           {" "}
           Sản phẩm áp dụng:{" "}
           <span className="font-normal">
-            Tất cả sản phẩm được bán trên Website NiceShoes
+            Tất cả sản phẩm được bán trên Website InnoString Stride
           </span>
         </p>
         <span className="font-semibold"> Sản phẩm không áp dụng: </span>
-        <p className="font-normal">Các sản phẩm tại cửa hàng NiceShoes,...</p>
+        <p className="font-normal">Các sản phẩm tại cửa hàng InnoString Stride,...</p>
         <p className="font-normal">
-          Không áp dụng cho sản phẩm mua trực tiếp tại NiceShoes.
+          Không áp dụng cho sản phẩm mua trực tiếp tại InnoString Stride.
         </p>
         <p className="font-semibold">
           {" "}
@@ -125,7 +125,7 @@ const ProductPage = () => {
           <span className="font-normal">
             Trong vòng 30 ngày (với sản phẩm nguyên giá) và 10 ngày (với sản
             phẩm giao ngay) kể từ ngày khách hàng nhận sản phẩm cho đến khi
-            NiceShoes nhận lại sản phẩm (tính theo Postmark). Xem thêm thông tin
+            InnoString Stride nhận lại sản phẩm (tính theo Postmark). Xem thêm thông tin
             tại CHÍNH SÁCH HOÀN TRẢ SẢN PHẨM
           </span>
         </p>

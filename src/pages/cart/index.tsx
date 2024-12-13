@@ -210,6 +210,23 @@ const CartPage = () => {
   const [infoShoeList, setInfoShoeList] = useState<IIForDetailShoe[]>([]);
   const [showModal, setShowMoal] = useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
+  const handleCheckoutWithCartCheck = () => {
+    if (!!userPrf) {
+      if (!listProducts || listProducts.length === 0) {
+        toast.warning("Không có sản phẩm trong giỏ hàng");
+        return;
+      }
+      navigate(path.payMentWithUser); // Navigate to user-specific payment page
+    } else {
+      // Check cart for non-logged-in users
+      if (!cartItems || cartItems.length === 0) {
+        toast.warning("Không có sản phẩm trong giỏ hàng");
+        return;
+      }
+      navigate(path.payment); // Navigate to general payment page
+    }
+  };
   const getDetailShoe = async () => {
     try {
       const res = await axios({
@@ -416,28 +433,17 @@ const CartPage = () => {
                 convertToCurrencyString(0)
               )}
             </div>
-            {cartItems.length === 0 ||
-            (listProducts?.length === 0 && !!userPrf) ? (
-              <button
-                className="bg-[#fe672b7d] font-semibold   py-3 text-sm text-white uppercase w-full"
-                onClick={() => {
-                  toast.warning("Không có sản phẩm trong giỏ hàng ");
-                }}
-              >
-                Mua hàng
-              </button>
-            ) : (
-              <button
-                className="bg-[#fe662b] font-semibold hover:bg-red-600  py-3 text-sm text-white uppercase w-full"
-                onClick={() => {
-                  !!userPrf
-                    ? navigate(path.payMentWithUser)
-                    : navigate(path.payment);
-                }}
-              >
-                Mua hàng
-              </button>
-            )}
+            <button
+  className={`${
+    (!!userPrf && listProducts.length === 0) || (!userPrf && cartItems.length === 0)
+      ? "bg-[#fe672b7d]"
+      : "bg-[#fe662b] hover:bg-red-600"
+  } font-semibold py-3 text-sm text-white uppercase w-full`}
+  onClick={handleCheckoutWithCartCheck}
+>
+  Mua hàng
+</button>
+
           </div>
         </div>
       </div>

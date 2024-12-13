@@ -550,7 +550,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <LazyLoadImage
-                        src="https://i.ibb.co/3yvZBpm/img-5.png"
+                        src="https://blackpinkupdate.com/wp-content/uploads/2019/01/2-BLACKPINK-Jennie-Rose-adidas-originals-korea-1024x1024.jpg"
                         className="w-full h-[257px] object-cover group-hover:scale-110 transition-transform duration-300"
                         alt="chair"
                       />
@@ -593,7 +593,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <LazyLoadImage
-                        src="https://i.ibb.co/gDdnJb5/img-6.png"
+                        src="https://bazaarvietnam.vn/wp-content/uploads/2023/05/bazaarvietnam-adidas-originals-hop-tac-voi-blackpink-2023-8.jpeg"
                         className="w-full h-[257px] object-cover group-hover:scale-110 transition-transform duration-300"
                         alt="wall design"
                       />

@@ -13,6 +13,7 @@ import {
   validatePassword,
 } from "../../utils/format";
 import Images from "../../static";
+
 interface CustomError {
   message: string;
   response?: {
@@ -37,7 +38,7 @@ const Registration = ({
           </h2>
           <p className="mb-4 text-sm text-gray-700">
             Bằng cách tạo tài khoản với{" "}
-            <span className="font-medium">NiceShoes</span>, bạn sẽ có thể di
+            <span className="font-medium">InnoString Stride</span>, bạn sẽ có thể di
             chuyển qua quy trình thanh toán nhanh hơn, lưu trữ nhiều địa chỉ
             giao hàng, xem và theo dõi đơn hàng của bạn trong tài khoản của bạn
             và hơn thế nữa.
@@ -55,7 +56,7 @@ const Registration = ({
           <h2 className="text-lg mb-4 font-semibold">Khách hàng đăng ký mới</h2>
           <p className="mb-4 text-sm text-gray-700">
             Bằng cách tạo tài khoản với{" "}
-            <span className="font-medium">NiceShoes</span>, bạn sẽ có thể di
+            <span className="font-medium">InnoString Stride</span>, bạn sẽ có thể di
             chuyển qua quy trình thanh toán nhanh hơn, lưu trữ nhiều địa chỉ
             giao hàng, xem và theo dõi đơn hàng của bạn trong tài khoản của bạn
             và hơn thế nữa.
@@ -93,12 +94,14 @@ const LoginScreen = () => {
     newPassword: "",
     newPassword2: "",
   });
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   const togglePasswordVisibility2 = () => {
     setShowPassword2(!showPassword2);
   };
+
   const login = async () => {
     if (!validateEmail(email)) {
       setErrors((prev) => ({ ...prev, email: "Email không hợp lệ." }));
@@ -114,23 +117,17 @@ const LoginScreen = () => {
       setErrors((prev) => ({ ...prev, password: "" }));
     }
     try {
-      const res = await axios({
-        method: "post",
-        url: API.login(),
-        data: {
-          email: email,
-          password: password,
-        },
+      const res = await axios.post(API.login(), {
+        email: email,
+        password: password,
       });
-      if (res.status) {
+      if (res.status === 200 || res.status === 201) {
         toast.success("Đăng nhập thành công");
         console.log(res.data);
         setToken(res.data.token);
         setUserToken(res.data.token);
-        sessionStorage.setItem(
-          "idAccount",
-          (jwtDecode(res.data.token) as { id: string }).id
-        );
+        const decoded = jwtDecode<{ id: string }>(res.data.token);
+        sessionStorage.setItem("idAccount", decoded.id);
         navigate(path.home);
         window.location.reload();
       }
@@ -149,9 +146,9 @@ const LoginScreen = () => {
         // Trường hợp khác, hiển thị một thông báo mặc định
         toast.error("Đăng nhập thất bại. Vui lòng thử lại sau.");
       }
-    } finally {
     }
   };
+
   const register = async () => {
     if (!validateEmail(emailR)) {
       setErrors2((prev) => ({ ...prev, email: "Email không hợp lệ." }));
@@ -189,15 +186,11 @@ const LoginScreen = () => {
       setErrors2((prev) => ({ ...prev, newPassword2: "" }));
     }
     try {
-      const res = await axios({
-        method: "post",
-        url: API.register(),
-        data: {
-          email: emailR,
-          password: newPassword,
-          role: "ROLE_USER",
-          phoneNumber: phone,
-        },
+      const res = await axios.post(API.register(), {
+        email: emailR,
+        password: newPassword,
+        role: "ROLE_USER",
+        phoneNumber: phone,
       });
       if (res.status === 200) {
         toast.success("Đăng ký thành công");
@@ -213,6 +206,7 @@ const LoginScreen = () => {
         });
         setCheckRegister(1);
       } else {
+        toast.error("Đăng ký không thành công. Vui lòng thử lại.");
       }
     } catch (error) {
       if (typeof error === "string") {
@@ -229,6 +223,7 @@ const LoginScreen = () => {
       }
     }
   };
+
   const forgotPasss = async () => {
     if (!validateEmail(emailForgot)) {
       setErrors3((prev) => ({ ...prev, email: "Email không hợp lệ." }));
@@ -237,17 +232,15 @@ const LoginScreen = () => {
       setErrors3((prev) => ({ ...prev, email: "" }));
     }
     try {
-      const res = await axios({
-        method: "post",
-        url: API.forgot(),
-        data: {
-          emailForgot: emailForgot,
-        },
+      const res = await axios.post(API.forgot(), {
+        emailForgot: emailForgot,
       });
-      if (res.status) {
+      if (res.status === 200 || res.status === 201) {
         toast.success("Mật khẩu đã được gửi qua mail của bạn");
         console.log(res.data);
         setCheckRegister(1);
+      } else {
+        toast.error("Gửi yêu cầu thất bại. Vui lòng thử lại.");
       }
     } catch (error) {
       if (typeof error === "string") {
@@ -267,10 +260,11 @@ const LoginScreen = () => {
       }
     }
   };
+
   return (
     <div className="min-h-screen bg-gray-100 flex ">
       <Fade top distance="10%" duration={1000}>
-        <div className="flex justify-between items-start bg-white p-6  ">
+        <div className="flex justify-between items-start bg-white p-6">
           <div className="w-[50%]">
             <div className="flex flex-col items-center p-4">
               {checkRegister === 2 ? (
@@ -280,7 +274,10 @@ const LoginScreen = () => {
                   </div>
                   <form
                     className="w-full max-w-xs"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      register();
+                    }}
                   >
                     <div className="mb-4">
                       <label
@@ -291,11 +288,12 @@ const LoginScreen = () => {
                       </label>
                       <input
                         value={emailR}
-                        onChange={(e) => setEmailR(e?.target?.value)}
+                        onChange={(e) => setEmailR(e.target.value)}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="email"
                         type="email"
                         placeholder="Your email"
+                        required
                       />
                       {errors2.email && (
                         <p className="text-red-500 text-xs italic">
@@ -306,17 +304,18 @@ const LoginScreen = () => {
                     <div className="mb-4">
                       <label
                         className="block text-gray-700 text-sm font-bold mb-2"
-                        htmlFor="email"
+                        htmlFor="phone"
                       >
                         Số điện thoại*
                       </label>
                       <input
                         value={phone}
-                        onChange={(e) => setPhone(e?.target?.value)}
+                        onChange={(e) => setPhone(e.target.value)}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
-                        type="email"
+                        id="phone"
+                        type="tel" // Sửa type từ "email" sang "tel"
                         placeholder="Số điện thoại"
+                        required
                       />
                       {errors2.phone && (
                         <p className="text-red-500 text-xs italic">
@@ -339,6 +338,7 @@ const LoginScreen = () => {
                           id="password"
                           type={showPassword ? "text" : "password"}
                           placeholder="******************"
+                          required
                         />
                         <span
                           onClick={togglePasswordVisibility}
@@ -348,11 +348,13 @@ const LoginScreen = () => {
                             <img
                               src={Images.iconEye}
                               className="w-4 h-4 object-contain"
+                              alt="Show Password"
                             />
                           ) : (
                             <img
                               src={Images.iconCloseEye}
                               className="w-4 h-4 object-contain"
+                              alt="Hide Password"
                             />
                           )}
                         </span>
@@ -378,6 +380,7 @@ const LoginScreen = () => {
                           id="password2"
                           type={showPassword2 ? "text" : "password"}
                           placeholder="******************"
+                          required
                         />
                         <span
                           onClick={togglePasswordVisibility2}
@@ -387,11 +390,13 @@ const LoginScreen = () => {
                             <img
                               src={Images.iconEye}
                               className="w-4 h-4 object-contain"
+                              alt="Show Password"
                             />
                           ) : (
                             <img
                               src={Images.iconCloseEye}
                               className="w-4 h-4 object-contain"
+                              alt="Hide Password"
                             />
                           )}
                         </span>
@@ -405,8 +410,7 @@ const LoginScreen = () => {
                     <div className="flex items-center justify-between">
                       <button
                         className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={register}
+                        type="submit" // Thay đổi loại nút thành "submit"
                       >
                         ĐĂNG KÝ
                       </button>
@@ -420,7 +424,10 @@ const LoginScreen = () => {
                   </div>
                   <form
                     className="w-full max-w-xs"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={(e) => {
+                      e.preventDefault(); // Ngăn chặn hành vi mặc định
+                      login(); // Gọi hàm login khi submit
+                    }}
                   >
                     <div className="mb-4">
                       <label
@@ -436,6 +443,7 @@ const LoginScreen = () => {
                         id="email"
                         type="email"
                         placeholder="Your email"
+                        required
                       />
                       {errors.email && (
                         <p className="text-red-500 text-xs italic">
@@ -457,6 +465,7 @@ const LoginScreen = () => {
                         id="password"
                         type="password"
                         placeholder="******************"
+                        required
                       />
                       {errors.password && (
                         <p className="text-red-500 text-xs italic">
@@ -469,13 +478,13 @@ const LoginScreen = () => {
                     <div className="flex items-center justify-between">
                       <button
                         className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={login}
+                        type="submit" // Thay đổi loại nút thành "submit"
+                        // onClick={login} // Loại bỏ sự kiện onClick
                       >
                         ĐĂNG NHẬP
                       </button>
                       <button
-                        className="  font-bold text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
+                        className="font-bold text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
                         type="button"
                         onClick={() => setCheckRegister(3)}
                       >
@@ -491,22 +500,26 @@ const LoginScreen = () => {
                   </div>
                   <form
                     className="w-full max-w-xs"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      forgotPasss();
+                    }}
                   >
                     <div className="mb-4">
                       <label
                         className="block text-gray-700 text-sm font-bold mb-2"
-                        htmlFor="email"
+                        htmlFor="emailForgot"
                       >
                         Email*
                       </label>
                       <input
                         value={emailForgot}
-                        onChange={(e) => setEmailForgot(e?.target?.value)}
+                        onChange={(e) => setEmailForgot(e.target.value)}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
+                        id="emailForgot"
                         type="email"
                         placeholder="Your email"
+                        required
                       />
                       {errors3.email && (
                         <p className="text-red-500 text-xs italic">
@@ -517,8 +530,7 @@ const LoginScreen = () => {
                     <div className="flex items-center justify-between">
                       <button
                         className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={forgotPasss}
+                        type="submit"
                       >
                         Gửi yêu cầu xác nhận
                       </button>

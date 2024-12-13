@@ -665,7 +665,7 @@ const PayMentWithUser = () => {
           <div className="w-full py-5 flex items-center justify-between px-4">
             <span>
               Nhấn "Đặt Hàng" đồng nghĩa với việc bạn đồng ý với các điều khoản
-              của NiceShoes
+              của InnoSring Stride
             </span>
             <button
               className="bg-red-600 text-white text-base font-medium px-10 py-2"
