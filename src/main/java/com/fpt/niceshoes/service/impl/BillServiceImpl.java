@@ -7,14 +7,7 @@ import com.fpt.niceshoes.dto.request.billdetail.BillClientRequest;
 import com.fpt.niceshoes.dto.request.giveback.GivebackRequest;
 import com.fpt.niceshoes.dto.response.BillResponse;
 import com.fpt.niceshoes.dto.response.statistic.StatisticBillStatus;
-import com.fpt.niceshoes.entity.Account;
-import com.fpt.niceshoes.entity.Bill;
-import com.fpt.niceshoes.entity.BillDetail;
-import com.fpt.niceshoes.entity.BillHistory;
-import com.fpt.niceshoes.entity.Notification;
-import com.fpt.niceshoes.entity.PaymentMethod;
-import com.fpt.niceshoes.entity.ShoeDetail;
-import com.fpt.niceshoes.entity.Voucher;
+import com.fpt.niceshoes.entity.*;
 import com.fpt.niceshoes.infrastructure.common.PageableObject;
 import com.fpt.niceshoes.infrastructure.common.ResponseObject;
 import com.fpt.niceshoes.infrastructure.constant.BillDetailStatusConstant;
@@ -25,14 +18,7 @@ import com.fpt.niceshoes.infrastructure.constant.TyperOrderConstant;
 import com.fpt.niceshoes.infrastructure.converter.BillConvert;
 import com.fpt.niceshoes.infrastructure.exception.RestApiException;
 import com.fpt.niceshoes.infrastructure.session.ShoseSession;
-import com.fpt.niceshoes.repository.IAccountRepository;
-import com.fpt.niceshoes.repository.IBillDetailRepository;
-import com.fpt.niceshoes.repository.IBillHistoryRepository;
-import com.fpt.niceshoes.repository.IBillRepository;
-import com.fpt.niceshoes.repository.INotificationRepository;
-import com.fpt.niceshoes.repository.IPaymentMethodRepository;
-import com.fpt.niceshoes.repository.IShoeDetailRepository;
-import com.fpt.niceshoes.repository.IVoucherRepository;
+import com.fpt.niceshoes.repository.*;
 import com.fpt.niceshoes.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +51,8 @@ public class BillServiceImpl implements BillService {
     private IShoeDetailRepository shoeDetailRepository;
     @Autowired
     private IBillDetailRepository billDetailRepository;
+    @Autowired
+    private IPromotionDetailRepository promotionDetailRepository;
     @Autowired
     private ShoseSession session;
 
@@ -503,82 +492,86 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject giveback(GivebackRequest request) {
-        BillDetail billDetail = billDetailRepository.findById(request.getBillDetail()).get();
+        // 1. Fetch the BillDetail by its ID
+        BillDetail billDetail = billDetailRepository.findById(request.getBillDetail())
+                .orElseThrow(() -> new RestApiException("Không tìm thấy chi tiết hóa đơn!"));
+
+        // 2. Fetch the associated ShoeDetail
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
+
+        // 3. Fetch the associated Bill
         Bill bill = billDetail.getBill();
+
+        // 4. Ensure the voucher is not reused and set the bill status to refund in process
         bill.setVoucher(null);
         bill.setStatus(BillStatusConstant.TRA_HANG);
-        BillDetail billReturnCheck = billDetailRepository.findByShoeDetailCodeAndBillIdAndStatus(shoeDetail.getCode(), bill.getId(), Boolean.TRUE);
+
+        // 5. Validate the refund quantity
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
         }
         if (request.getQuantity() > billDetail.getQuantity()) {
             throw new RestApiException("Quá số lượng cho phép!");
         }
-        if (request.getQuantity() == billDetail.getQuantity()) {
-            bill.setTotalMoney((bill.getTotalMoney()
-                    .add(bill.getMoneyReduce()))
-                    .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-            billRepository.save(bill);
-            if (billReturnCheck != null) {
-                billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-                billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-                if (billDetail.getQuantity() == 0) {
-                    billDetailRepository.delete(billDetail);
-                } else {
-                    billDetailRepository.save(billDetail);
-                }
-                billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
-                billDetailRepository.save(billReturnCheck);
-            } else {
-                billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-                if (billDetail.getQuantity() == 0) {
-                    billDetailRepository.delete(billDetail);
-                } else {
-                    billDetailRepository.save(billDetail);
-                }
-            }
-        } else if (request.getQuantity() < billDetail.getQuantity()) {
-            if (billReturnCheck != null) {
-                billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
-                billDetailRepository.save(billReturnCheck);
-            } else {
-                BillDetail billDeReturn = new BillDetail();
-                billDeReturn.setQuantity(request.getQuantity());
-                billDeReturn.setShoeDetail(shoeDetail);
-                billDeReturn.setBill(bill);
-                billDeReturn.setPrice(billDetail.getPrice());
-                billDeReturn.setStatus(BillDetailStatusConstant.TRA_HANG);
-                billDetailRepository.save(billDeReturn);
-            }
+
+        // 6. Fetch the promotion price from promotion_detail if it exists
+        PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailId(shoeDetail.getId());
+
+        // 7. Determine the price to use for refund calculation
+        // If promotionPrice exists, use it; otherwise, use the original price from billDetail
+        BigDecimal priceToUse = (promotionDetail != null && promotionDetail.getPromotionPrice() != null)
+                ? promotionDetail.getPromotionPrice()
+                : billDetail.getPrice();
+
+        // 8. Calculate the amount to subtract from the bill's total money
+        BigDecimal amountToSubtract = priceToUse.multiply(BigDecimal.valueOf(request.getQuantity()));
+
+        // 9. Update the bill and billDetail based on whether it's a full or partial refund
+        if (request.getQuantity().equals(billDetail.getQuantity())) {
+            // Full refund for this BillDetail
+            bill.setTotalMoney(bill.getTotalMoney().subtract(amountToSubtract));
+            billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+        } else {
+            // Partial refund: reduce the quantity in BillDetail
             billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-            bill.setTotalMoney((bill.getTotalMoney()
-                    .add(bill.getMoneyReduce()))
-                    .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-            billRepository.save(bill);
-            if (billDetail.getQuantity() == 0) {
-                billDetailRepository.delete(billDetail);
-            } else {
-                billDetailRepository.save(billDetail);
-            }
+            bill.setTotalMoney(bill.getTotalMoney().subtract(amountToSubtract));
         }
 
+        // 10. Save the updated Bill and BillDetail
+        billRepository.save(bill);
+        billDetailRepository.save(billDetail);
+
+        // 11. Record the refund action in BillHistory
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setStatus(BillStatusConstant.TRA_HANG);
         history.setNote("Trả sản phẩm \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() +
                 "-" + shoeDetail.getSize().getName() + "]\" - Số lượng: \"" + request.getQuantity() + "\". Lý do: " + request.getNote());
         billHistoryRepository.save(history);
-        if (billDetailRepository.findByBillAndStatus(bill, false).isEmpty()) {
+
+        // 12. Check if all BillDetails have been refunded; if so, cancel the bill
+        boolean allRefunded = billDetailRepository.findByBillAndStatus(bill, false).isEmpty();
+        if (allRefunded) {
             bill.setStatus(BillStatusConstant.DA_HUY);
             billRepository.save(bill);
-            BillHistory billHistory = new BillHistory();
-            billHistory.setBill(bill);
-            billHistory.setNote("Đơn hàng đã bị hủy");
-            billHistory.setStatus(BillStatusConstant.DA_HUY);
-            billHistoryRepository.save(billHistory);
+
+            // Record the bill cancellation in BillHistory
+            BillHistory cancelHistory = new BillHistory();
+            cancelHistory.setBill(bill);
+            cancelHistory.setNote("Đơn hàng đã bị hủy");
+            cancelHistory.setStatus(BillStatusConstant.DA_HUY);
+            billHistoryRepository.save(cancelHistory);
         }
+
+        // 13. Return the updated BillDetail
         return new ResponseObject(billDetail);
     }
+
+
+    public BigDecimal getTotalRefundAmount() {
+        return billRepository.calculateTotalRefundAmount(Arrays.asList(7, 8));
+    }
+
 }

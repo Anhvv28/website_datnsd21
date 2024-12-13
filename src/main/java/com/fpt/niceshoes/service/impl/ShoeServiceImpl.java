@@ -49,7 +49,14 @@ public class ShoeServiceImpl implements ShoeService {
                 .brand(request.getBrand())
                 .status(request.getStatus())
                 .build();
-        return new PageableObject<>(shoeRepository.getAllShoe(customRequest, pageable));
+        // Fetching the data from the repository
+        PageableObject<ShoeResponse> result = new PageableObject<>(shoeRepository.getAllShoe(customRequest, pageable));
+
+        // Printing the result for debugging purposes
+        System.out.println("Result Data: " + result);
+
+        // Returning the data
+        return result;
     }
 
     @Override
@@ -59,30 +66,57 @@ public class ShoeServiceImpl implements ShoeService {
 
     @Override
     public Shoe create(ShoeRequest request) {
-        if (shoeRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new RestApiException(request.getName() + " đã tồn tại!");
+        // Chuẩn hóa tên: loại bỏ khoảng trắng ở đầu và cuối
+        String normalizedName = request.getName().trim();
+
+        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
+        if (normalizedName.isEmpty()) {
+            throw new RestApiException("Tên sản phẩm không được để trống!");
         }
-        if(request.getName().length() > 50){
-            throw new RestApiException("Tên sản phẩm có vẻ quá dài, vui lòng thử lại!");
+
+
+        // Kiểm tra nếu tên quá dài
+        if (normalizedName.length() > 50) {
+            throw new RestApiException("Tên sản phẩm quá dài, vui lòng thử lại!");
         }
+
+        // Kiểm tra nếu tên sản phẩm đã tồn tại
+        if (shoeRepository.existsByNameIgnoreCase(normalizedName)) {
+            throw new RestApiException(normalizedName + " đã tồn tại!");
+        }
+
+        // Chuyển đổi DTO thành thực thể Shoe và lưu
         Shoe shoe = shoeConvert.convertRequestToEntity(request);
+        shoe.setName(normalizedName);  // Đảm bảo tên đã chuẩn hóa được lưu
         return shoeRepository.save(shoe);
     }
 
     @Override
     public Shoe update(Long id, ShoeRequest request) {
-        Shoe oldShoe = shoeRepository.findById(id).get();
-        if (shoeRepository.existsByNameIgnoreCase(request.getName())) {
-            if (oldShoe.getName().equals(request.getName())) {
-                return shoeRepository.save(shoeConvert.convertRequestToEntity(oldShoe, request));
-            }
-            throw new RestApiException(request.getName() + " đã tồn tại!");
-        } else {
-            if(request.getName().length() > 50){
-                throw new RestApiException("Tên sản phẩm có vẻ quá dài, vui lòng thử lại!");
-            }
-            return shoeRepository.save(shoeConvert.convertRequestToEntity(oldShoe, request));
+        Shoe oldShoe = shoeRepository.findById(id)
+                .orElseThrow(() -> new RestApiException("Không tìm thấy sản phẩm với ID: " + id));
+
+        // Chuẩn hóa tên: loại bỏ khoảng trắng ở đầu và cuối
+        String normalizedName = request.getName().trim();
+
+        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
+        if (normalizedName.isEmpty()) {
+            throw new RestApiException("Tên sản phẩm không được để trống!");
         }
+        // Kiểm tra nếu tên quá dài
+        if (normalizedName.length() > 50) {
+            throw new RestApiException("Tên sản phẩm có vẻ quá dài, vui lòng thử lại!");
+        }
+
+        // Kiểm tra nếu tên sản phẩm đã tồn tại và không phải chính thực thể đang cập nhật
+        if (shoeRepository.existsByNameIgnoreCase(normalizedName) &&
+                !oldShoe.getName().equalsIgnoreCase(normalizedName)) {
+            throw new RestApiException(normalizedName + " đã tồn tại!");
+        }
+
+        // Cập nhật tên sản phẩm và lưu
+        oldShoe.setName(normalizedName);
+        return shoeRepository.save(oldShoe);
     }
 
     @Override

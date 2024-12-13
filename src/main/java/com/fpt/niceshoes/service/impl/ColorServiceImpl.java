@@ -33,24 +33,51 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public Color create(ColorRequest request) {
-        if (repository.existsByNameIgnoreCase(request.getName())) {
-            throw new RestApiException("Màu " + request.getName() + " đã tồn tại!");
+        // Chuẩn hóa tên: loại bỏ khoảng trắng ở đầu và cuối, kiểm tra trống
+        String normalizedName = request.getName().trim();
+
+        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
+        if (normalizedName.isEmpty()) {
+            throw new RestApiException("Tên màu không được để trống!");
         }
+        // Kiểm tra sự tồn tại của tên đã chuẩn hóa
+        if (repository.existsByNameIgnoreCase(normalizedName)) {
+            throw new RestApiException("Màu '" + normalizedName + "' đã tồn tại!");
+        }
+
+        // Chuyển DTO thành thực thể và lưu
         Color color = colorConvert.convertRequestToEntity(request);
+        color.setName(normalizedName); // Đảm bảo tên được lưu không chứa khoảng trắng thừa
         return repository.save(color);
     }
 
     @Override
     public Color update(Long id, ColorRequest request) {
-        Color oldColor = repository.findById(id).get();
-        if (repository.existsByNameIgnoreCase(request.getName())) {
-            if (oldColor.getName().equals(request.getName())) {
-                return repository.save(colorConvert.convertRequestToEntity(oldColor, request));
-            }
-            throw new RestApiException("Màu " + request.getName() + " đã tồn tại!");
-        } else {
-            return repository.save(colorConvert.convertRequestToEntity(oldColor, request));
+        // Tìm đối tượng Color theo id
+        Color oldColor = repository.findById(id).orElseThrow(() ->
+                new RestApiException("Không tìm thấy màu với ID: " + id)
+        );
+
+        // Chuẩn hóa tên màu bằng cách loại bỏ khoảng trắng thừa
+        String normalizedName = request.getName().trim();
+
+        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
+        if (normalizedName.isEmpty()) {
+            throw new RestApiException("Tên màu không được để trống!");
         }
+
+
+        // Kiểm tra nếu tên đã tồn tại và không phải chính thực thể đang được cập nhật
+        if (repository.existsByNameIgnoreCase(normalizedName) &&
+                !oldColor.getName().equalsIgnoreCase(normalizedName)) {
+            throw new RestApiException("Màu '" + normalizedName + "' đã tồn tại!");
+        }
+
+        // Cập nhật dữ liệu từ request
+        oldColor.setName(normalizedName); // Cập nhật tên đã chuẩn hóa
+
+        // Lưu và trả về đối tượng đã cập nhật
+        return repository.save(oldColor);
     }
 
     @Override

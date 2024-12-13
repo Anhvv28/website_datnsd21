@@ -7,11 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
 public interface IPromotionDetailRepository extends JpaRepository<PromotionDetail, Long> {
     Boolean existsByShoeDetailId(Long id);
+
+    @Query("SELECT pd.promotionPrice FROM PromotionDetail pd WHERE pd.shoeDetail.id = :shoeDetailId")
+    BigDecimal findPromotionPriceByShoeDetailId(@Param("shoeDetailId") Long shoeDetailId);
+
     @Query(value = """
             SELECT GROUP_CONCAT(DISTINCT s.id) FROM promotion_detail pmd
             JOIN shoe_detail sd ON sd.id = pmd.shoe_detail_id

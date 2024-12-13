@@ -21,7 +21,7 @@ public interface AccountResponse {
 
     LocalDateTime getCreateAt();
 
-    Boolean getStatus();
+    Boolean getDeleted();
 
     String getAvatar();
 
