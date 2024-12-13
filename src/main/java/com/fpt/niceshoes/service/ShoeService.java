@@ -15,6 +15,7 @@ public interface ShoeService {
     Shoe create(ShoeRequest request);
     Shoe update(Long id,ShoeRequest request);
     Shoe changeStatus(Long id);
+
     List<ShoePromotionResponse> getAllShoeInPromotion(Long promotion);
     List<ShoeResponse> getTopSell(Integer top);
 }

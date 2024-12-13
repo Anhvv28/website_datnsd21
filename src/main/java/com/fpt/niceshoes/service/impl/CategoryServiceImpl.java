@@ -33,47 +33,24 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category create(CategoryRequest request) {
-        // Chuẩn hóa tên danh mục: loại bỏ khoảng trắng ở đầu và cuối
-        String normalizedName = request.getName().trim();
-
-        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
-        if (normalizedName.isEmpty()) {
-            throw new RestApiException("Tên danh mục không được để trống!");
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            throw new RestApiException("Danh mục " + request.getName() + " đã tồn tại!");
         }
-
-        // Kiểm tra nếu danh mục đã tồn tại
-        if (repository.existsByNameIgnoreCase(normalizedName)) {
-            throw new RestApiException("Danh mục '" + normalizedName + "' đã tồn tại!");
-        }
-
-        // Chuyển đổi DTO thành thực thể Category và lưu
         Category category = categoryConvert.convertRequestToEntity(request);
-        category.setName(normalizedName); // Đảm bảo lưu tên đã chuẩn hóa
         return repository.save(category);
     }
 
     @Override
     public Category update(Long id, CategoryRequest request) {
-        Category oldCategory = repository.findById(id)
-                .orElseThrow(() -> new RestApiException("Không tìm thấy danh mục với ID: " + id));
-
-        // Chuẩn hóa tên danh mục
-        String normalizedName = request.getName().trim();
-
-        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
-        if (normalizedName.isEmpty()) {
-            throw new RestApiException("Tên danh mục không được để trống!");
+        Category oldCategory = repository.findById(id).get();
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            if (oldCategory.getName().equals(request.getName())) {
+                return repository.save(categoryConvert.convertRequestToEntity(oldCategory, request));
+            }
+            throw new RestApiException("Danh mục  " + request.getName() + " đã tồn tại!");
+        } else {
+            return repository.save(categoryConvert.convertRequestToEntity(oldCategory, request));
         }
-
-        // Kiểm tra nếu danh mục đã tồn tại và không phải chính thực thể đang cập nhật
-        if (repository.existsByNameIgnoreCase(normalizedName) &&
-                !oldCategory.getName().equalsIgnoreCase(normalizedName)) {
-            throw new RestApiException("Danh mục '" + normalizedName + "' đã tồn tại!");
-        }
-
-        // Cập nhật tên danh mục và lưu
-        oldCategory.setName(normalizedName);
-        return repository.save(oldCategory);
     }
 
     @Override

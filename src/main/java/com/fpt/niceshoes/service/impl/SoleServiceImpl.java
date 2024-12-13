@@ -34,48 +34,24 @@ public class SoleServiceImpl implements SoleService {
 
     @Override
     public Sole create(SoleRequest request) {
-        // Chuẩn hóa tên đế giày: loại bỏ khoảng trắng ở đầu và cuối
-        String normalizedName = request.getName().trim();
-
-        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
-        if (normalizedName.isEmpty()) {
-            throw new RestApiException("Tên đế giày không được để trống!");
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            throw new RestApiException("Đế giày " + request.getName() + " đã tồn tại!");
         }
-
-        // Kiểm tra nếu đế giày đã tồn tại
-        if (repository.existsByNameIgnoreCase(normalizedName)) {
-            throw new RestApiException("Đế giày '" + normalizedName + "' đã tồn tại!");
-        }
-
-        // Chuyển đổi DTO thành thực thể Sole và lưu
         Sole sole = soleConvert.convertRequestToEntity(request);
-        sole.setName(normalizedName); // Đảm bảo lưu tên đã chuẩn hóa
         return repository.save(sole);
     }
 
     @Override
     public Sole update(Long id, SoleRequest request) {
-        Sole oldSole = repository.findById(id)
-                .orElseThrow(() -> new RestApiException("Không tìm thấy đế giày với ID: " + id));
-
-        // Chuẩn hóa tên đế giày
-        String normalizedName = request.getName().trim();
-
-        // Kiểm tra nếu tên trống sau khi loại bỏ khoảng trắng
-        if (normalizedName.isEmpty()) {
-            throw new RestApiException("Tên đế giày không được để trống!");
+        Sole oldSole = repository.findById(id).get();
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            if (oldSole.getName().equals(request.getName())) {
+                return repository.save(soleConvert.convertRequestToEntity(oldSole, request));
+            }
+            throw new RestApiException("Đế giày " + request.getName() + " đã tồn tại!");
+        } else {
+            return repository.save(soleConvert.convertRequestToEntity(oldSole, request));
         }
-
-
-        // Kiểm tra nếu đế giày đã tồn tại và không phải chính thực thể đang cập nhật
-        if (repository.existsByNameIgnoreCase(normalizedName) &&
-                !oldSole.getName().equalsIgnoreCase(normalizedName)) {
-            throw new RestApiException("Đế giày '" + normalizedName + "' đã tồn tại!");
-        }
-
-        // Cập nhật tên đế giày và lưu
-        oldSole.setName(normalizedName);
-        return repository.save(oldSole);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.fpt.niceshoes.controller.admin;
 
 
 import com.fpt.niceshoes.dto.request.giveback.GivebackRequest;
-import com.fpt.niceshoes.dto.response.BillResponse;
 import com.fpt.niceshoes.dto.response.statistic.StatisticBillStatus;
 import com.fpt.niceshoes.entity.Bill;
 import com.fpt.niceshoes.infrastructure.common.PageableObject;
@@ -11,13 +10,10 @@ import com.fpt.niceshoes.dto.request.billdetail.BillClientRequest;
 import com.fpt.niceshoes.dto.request.bill.BillRequest;
 import com.fpt.niceshoes.dto.request.bill.BillSearchRequest;
 import com.fpt.niceshoes.service.BillService;
-import com.fpt.niceshoes.service.impl.BillServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -25,8 +21,6 @@ import java.util.List;
 public class BillController {
     @Autowired
     private BillService billService;
-    @Autowired
-    private BillServiceImpl billServicee;
 
     @GetMapping
     public PageableObject getAll(BillSearchRequest request) {
@@ -82,14 +76,4 @@ public class BillController {
     public ResponseObject giveback(@RequestBody GivebackRequest request){
         return new ResponseObject(billService.giveback(request));
     }
-
-    @GetMapping("/status")
-    public ResponseEntity<List<StatisticBillStatus>> getBillsByStatus(@RequestParam List<Integer> statuses) {
-        return ResponseEntity.ok(billService.statisticBillStatus());
-    }
-    @GetMapping("/refund-amount")
-    public BigDecimal getTotalRefundAmount() {
-        return billServicee.getTotalRefundAmount();
-    }
-
 }

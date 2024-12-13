@@ -41,5 +41,4 @@ public interface BillService {
 
     ResponseObject givebackAll(Long idBill, String note);
     ResponseObject giveback(GivebackRequest request);
-
 }

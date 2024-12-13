@@ -13,16 +13,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Long> {
 
     Boolean existsByCodeIgnoreCase(String code);
-
-    @Query("SELECT SUM(b.totalMoney) FROM Bill b WHERE b.status IN :statuses")
-    BigDecimal calculateTotalRefundAmount(@Param("statuses") List<Integer> statuses);
 
     @Query(value = """
             SELECT  b.id AS id,
@@ -141,5 +137,4 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
           AND (:#{#req.fromDate} IS NULL OR :#{#req.toDate} IS NULL OR (b.update_at BETWEEN :#{#req.fromDate} AND :#{#req.toDate}))
         """, nativeQuery = true)
     Page<BillResponse> getStatisticalByDateRange(@Param("req") BillSearchRequest request, Pageable pageable);
-
 }
