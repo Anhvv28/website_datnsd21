@@ -63,14 +63,14 @@ function TemplateExportBill() {
                         </div>
                         <div className="">
                             <ul className="list-unstyled text-end">
-                                <li className='fw-semibold text-danger'>Sneaker NiceShoes Store</li>
+                                <li className='fw-semibold text-danger'>InnoString Stride Store</li>
                                 <li>Địa chỉ: 66 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội</li>
                             </ul>
                         </div>
                     </div>
 
                     <div className="mt-3">
-                        <h3 className='text-center fw-semibold'>SNEAKER NICESHOES</h3>
+                        <h3 className='text-center fw-semibold'>InnoString Stride</h3>
                         <ul className="list-unstyled">
                             <li>Khách hàng: <span className='float-end'>{bill.customerName === null ? "Khách hàng lẻ" : bill.customerName}</span></li>
                             <li>Địa chỉ: <span className='float-end'>{bill?.address !== null ? (

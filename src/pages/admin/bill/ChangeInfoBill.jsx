@@ -101,6 +101,7 @@ function ChangeInfoBill({ bill, onSuccess }) {
         const newData = { ...data };
         newData.address = `${data.specificAddress}##${data.ward}##${data.district}##${data.province}`;
         newData.moneyShip = moneyShip;
+        newData.moneyReduce = bill.moneyReduce;
         request.put(`/bill/change-info-customer/${bill.id}`, newData).then(response => {
             toast.success("Cập nhật thành công!");
             onSuccess();

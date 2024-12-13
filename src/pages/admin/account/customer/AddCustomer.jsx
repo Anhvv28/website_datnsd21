@@ -57,7 +57,7 @@ function AddCustomer() {
       formData.append("address.province", dataAddress.province);
       formData.append("address.defaultAddress", true);
 
-      formData.append("cccd", data.cccd);
+      // formData.append("cccd", data.cccd);
       formData.append("username", data.username);
       formData.append("name", data.name);
       formData.append("gender", data.gender);
@@ -157,14 +157,14 @@ function AddCustomer() {
               </Col>
               <Col span={12}>
                 <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
-                  <Input type="date" />
+                <Input type="date" max={new Date().toISOString().split("T")[0]} />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
                   <Radio.Group>
                     <Radio value={"Nam"}>Nam</Radio>
-                    <Radio value={"Nữ"}>Nữ</Radio>
+                    <Radio value={"Nu"}>Nữ</Radio>
                   </Radio.Group>
                 </Form.Item>
               </Col>

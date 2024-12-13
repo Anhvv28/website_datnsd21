@@ -103,10 +103,16 @@ const BillDetail = () => {
   }
 
   const handleChangeQuantity = (record, quantity) => {
+    const newQuantity = parseInt(quantity, 10);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      toast.error("Số lượng không hợp lệ!");
+      return;
+    }
+  
     request.get(`/bill-detail/update-quantity/${record.id}`, {
       params: {
-        newQuantity: quantity,
-        price: record.status === true ? record.price : (record.discountValue === null ? record.shoePrice : record.discountValue)
+        newQuantity: newQuantity,
+        price: record.promotionPrice || record.price, // Use promotionPrice if available
       }
     }).then(response => {
       loadBillDetail();
@@ -115,45 +121,61 @@ const BillDetail = () => {
       toast.success("Cập nhật thành công!");
     }).catch(e => {
       console.log(e);
-      toast.error(e.response.data);
-    })
+      toast.error(e.response?.data || "Có lỗi xảy ra!");
+    });
   }
+  
 
   const handleGiveBack = (id) => {
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
       content: (
-        <>
-          <Form layout="vertical" form={formGiveback} onFinish={async (data) => {
-            data.billDetail = id;
-            await request.post(`/bill/give-back`, data).then(response => {
+        <Form
+          layout="vertical"
+          form={formGiveback}
+          onFinish={async (data) => {
+            data.billDetail = id; // ID sản phẩm trong hóa đơn
+            try {
+              const response = await request.post(`/bill/give-back`, data);
+  
+              // Làm mới danh sách chi tiết hóa đơn và tổng tiền
               loadBillDetail();
               loadBill();
               loadBillHistory();
+  
+              // Hiển thị thông báo thành công
               toast.success("Trả hàng thành công!");
-            }).catch(e => {
-              console.log(e);
-              toast.error(e.response.data);
-            })
-          }}>
-            <Form.Item label="Số lượng" name={"quantity"} rules={[{ required: true, message: "Số lượng không được để trống!", },]}>
-              <InputNumber placeholder="Nhập số lượng muốn trả hàng..." className="w-100" />
-            </Form.Item>
-            <Form.Item label="Lý do trả hàng" name={"note"} rules={[{ required: true, message: "Lý do trả hàng không được để trống!", },]}>
-              <TextArea placeholder="Nhập lý do trả hàng..." />
-            </Form.Item>
-          </Form>
-        </>
+            } catch (e) {
+              console.error(e);
+              toast.error("Có lỗi xảy ra khi trả hàng!");
+            }
+          }}
+        >
+          <Form.Item
+            label="Số lượng"
+            name="quantity"
+            rules={[{ required: true, message: "Số lượng không được để trống!" }]}
+          >
+            <InputNumber placeholder="Nhập số lượng muốn trả hàng..." className="w-100" min={1} />
+          </Form.Item>
+          <Form.Item
+            label="Lý do trả hàng"
+            name="note"
+            rules={[{ required: true, message: "Lý do trả hàng không được để trống!" }]}
+          >
+            <TextArea placeholder="Nhập lý do trả hàng..." />
+          </Form.Item>
+        </Form>
       ),
       okText: "Xác nhận",
       cancelText: "Hủy",
       onOk: async () => {
-        formGiveback.submit()
+        formGiveback.submit(); // Gửi form để hoàn hàng
       },
     });
-  }
-
+  };  
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = (isCancel) => {
     setCancelBill(isCancel);
@@ -217,14 +239,20 @@ const BillDetail = () => {
               {name}
             </li>
             <li><small>{record.shoeCode}</small></li>
-            <li>Đơn giá:
-              <span className="text-danger"><FormatCurrency value={record.price} /></span>
-            </li>
+                <>
+                    {record.discountPercent !== null ? (
+                        <>
+                            <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <br /> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                        </>
+                    ) : (
+                        <span className="text-danger"><FormatCurrency value={record.price} /></span>
+                    )}
+                </>
           </ul>
         </>
       )
     },
-    {
+     {
       title: 'Số lượng',
       dataIndex: 'quantity',
       key: 'quantity',
@@ -240,16 +268,8 @@ const BillDetail = () => {
         </>
       )
     },
-    {
-      title: 'Tổng tiền',
-      dataIndex: 'quantity',
-      key: 'total',
-      render: (quantity, record) => (
-        <div className="text-center text-danger fw-semibold">
-          <FormatCurrency value={record.price * record.quantity} />
-        </div>
-      )
-    },
+    
+            
     {
       title: 'Hành động',
       dataIndex: 'id',

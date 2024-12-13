@@ -29,7 +29,7 @@ const Sidebar = () => {
     >
       <Link className="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
         <img
-          src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
+          src="https://fpt.ai/wp-content/uploads/2024/06/Hieu-suat-khong-gioi-han-2.png"
           alt=""
           height="50%"
           width="100%"

@@ -45,7 +45,8 @@ function StaffDetail() {
         birthday: response.birthday,
         gender: response.gender,
         email: response.email,
-        phoneNumber: response.phoneNumber
+        phoneNumber: response.phoneNumber,
+        deleted: response.deleted === true || response.deleted === 0 ? 1 : 0,
       });
     }).catch((e) => {
       console.log(e);
@@ -65,6 +66,7 @@ function StaffDetail() {
     formData.append("birthday", data.birthday);
     formData.append("email", data.email);
     formData.append("phoneNumber", data.phoneNumber);
+    formData.append("deleted", data.deleted);
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
@@ -137,8 +139,14 @@ function StaffDetail() {
               <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
                 <Radio.Group>
                   <Radio value={"Nam"}>Nam</Radio>
-                  <Radio value={"Nữ"}>Nữ</Radio>
+                  <Radio value={"Nu"}>Nữ</Radio>
                 </Radio.Group>
+              </Form.Item>
+              <Form.Item label={"Trạng thái"} name={"deleted"} rules={[{ required: true, message: "Trạng thái không được để trống!" }]}>
+                <Radio.Group>
+                <Radio value={0} >Đang làm</Radio>
+                <Radio value={1}>Đã nghỉ</Radio>
+            </Radio.Group>
               </Form.Item>
               <Form.Item label={"Email"} name={"email"} rules={[{ required: true, message: "Email không được để trống!" }, { pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$$', message: "Email không đúng định dạng!" }]} >
                 <Input placeholder="Nhập email ..." />

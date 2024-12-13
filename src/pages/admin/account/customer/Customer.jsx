@@ -93,7 +93,7 @@ function Customer() {
             placeholder="Tìm kiếm khách hàng theo tên, email, sdt ..."
           />
         </Col>
-        {/* <Col span={10} className="text-nowrap">
+        <Col span={10} className="text-nowrap">
           <div className="mb-1">Trạng thái</div>
           <Radio.Group
             defaultValue={null} className="align-middle"
@@ -103,7 +103,7 @@ function Customer() {
             <Radio value={false}>Kích hoạt</Radio>
             <Radio value={true}>Hủy kích hoạt</Radio>
           </Radio.Group>
-        </Col> */}
+        </Col>
         <Col span={4}>
           <div className="mb-1">‍</div>
           <Link to={"/admin/customer/add"}>

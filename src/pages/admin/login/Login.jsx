@@ -1,85 +1,131 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import React from "react";
-import { useState } from "react";
+import { jwtDecode } from "jwt-decode"; // Corrected named import
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setToken, setUserToken } from "~/helper/useCookies";
+import './login.css'; // Ensure the CSS file name is correct
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false); // Optional: For loading state
 
+  // Email validation function
   const validateEmail = (email) => {
-    const re = /\S+@\S+\.\S+/; // Regex đơn giản cho định dạng email
+    const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
+
+  // Password validation function
   const validatePassword = (password) => {
-    // Định dạng mật khẩu: ít nhất 6 ký tự, ít nhất một số, một chữ hoa
     const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
     return re.test(password);
   };
+
+  // Login function
   const login = async () => {
-    // if (!validateEmail(email)) {
-    //   setErrors((prev) => ({ ...prev, email: "Email không hợp lệ." }));
-    //   return;
-    // } else {
-    //   setErrors((prev) => ({ ...prev, email: "" }));
-    // }
+    // Reset errors
+    setErrors({ email: "", password: "" });
 
+    // Validate email and password before calling API
+    let valid = true;
+    if (!validateEmail(email)) {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "Địa chỉ email không hợp lệ." }));
+      valid = false;
+    }
     // if (!validatePassword(password)) {
-    //   setErrors((prev) => ({ ...prev, password: "Mật khẩu không hợp lệ." }));
-    //   return;
-    // } else {
-    //   setErrors((prev) => ({ ...prev, password: "" }));
+    //   setErrors((prevErrors) => ({ ...prevErrors, password: "Mật khẩu phải có ít nhất 6 ký tự, gồm cả chữ và số." }));
+    //   valid = false;
     // }
-    try {
-      const res = await axios({
-        method: "post",
+    if (!valid) return;
 
-        url: `http://localhost:8080/login-v2/singin`,
-        data: {
-          email: email,
-          password: password,
-        },
-      });
-      if (res.status) {
-        if (jwtDecode(res.data.token).role === 'ROLE_USER') {
-          toast.error('Bạn không có quyền truy cập tính năng này!')
+    setIsLoading(true); // Optional: Start loading
+
+    try {
+      const res = await axios.post(`http://localhost:8080/login-v2/singin`, { email, password });
+
+      if (res.status === 200 || res.status === 201) { // Typically 200 or 201 for successful POST
+        const decodedToken = jwtDecode(res.data.token);
+        if (decodedToken.role === 'ROLE_USER') {
+          toast.error('Bạn không có quyền truy cập tính năng này!');
         } else {
           toast.success("Đăng nhập thành công");
-          setToken(res.data.token);
-          setUserToken(res.data.token);
-          sessionStorage.setItem("idAccount", jwtDecode(res.data.token).id);
-          navigate("/");
+          setToken(res.data.token); // Save token to cookies
+          setUserToken(res.data.token); // Save user token
+          sessionStorage.setItem("idAccount", decodedToken.id); // Save user ID
+          navigate("/"); // Redirect after successful login
         }
+      } else {
+        toast.error('Đăng nhập không thành công. Vui lòng thử lại.');
       }
     } catch (error) {
-      toast.error(error.response.data)
+      // Handle different error scenarios
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        toast.error(error.response.data.message || 'Đăng nhập thất bại.');
+      } else if (error.request) {
+        // Request was made but no response received
+        toast.error('Không thể kết nối đến máy chủ.');
+      } else {
+        // Something else happened
+        toast.error('Đã xảy ra lỗi.');
+      }
+    } finally {
+      setIsLoading(false); // Optional: End loading
     }
   };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevents the default form submission (page reload)
+    login(); // Calls the login function
+  };
+
   return (
-    <div class="container-fluid">
-      <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="row">
-          <h5 class="text-center m-0 p-0">LOGIN</h5>
-          <div className="container">
-            <div class="mb-3">
-              <label class="form-label">Tài khoản</label>
-              <input type="text" class="form-control rounded-0" name="email" onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Mật khẩu</label>
-              <input type="password" class="form-control rounded-0" name="password" onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <div class="mb-3">
-              <button type="submit" class="btn btn-outline-dark rounded-0 w-100" onClick={login}>Đăng nhập</button>
-            </div>
+    <div className="login-container">
+      <div className="login-form">
+        <h3 className="text-center">Đăng nhập</h3>
+        {/* Wrap inputs and button in a form */}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Tài khoản</label>
+            <input
+              type="email"
+              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              placeholder="Nhập email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              aria-describedby="emailHelp"
+            />
+            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
-          <a href="/forgot" class="text-dark small"><i class="fas fa-key"></i> Quên mật khẩu ?</a>
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Mật khẩu</label>
+            <input
+              type="password"
+              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              aria-describedby="passwordHelp"
+            />
+            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+          </div>
+          <div className="mb-3">
+            {/* Change button type to submit */}
+            <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+              {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            </button>
+          </div>
+        </form>
+        <a href="/forgot" className="forgot-password">
+          <i className="fas fa-key"></i> Quên mật khẩu?
+        </a>
       </div>
     </div>
   );

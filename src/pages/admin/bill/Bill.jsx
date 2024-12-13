@@ -86,11 +86,11 @@ const Bill = ({ onLoad }) => {
       dataIndex: 'code',
       key: 'code',
     },
-    // {
-    //   title: 'Người tạo',
-    //   dataIndex: 'employee',
-    //   key: 'employee',
-    // },
+    {
+      title: 'Người tạo',
+      dataIndex: 'employee',
+      key: 'employee',
+    },
     {
       title: 'Khách hàng',
       dataIndex: 'customer',
@@ -107,7 +107,12 @@ const Bill = ({ onLoad }) => {
       title: 'Tổng tiền',
       dataIndex: 'totalMoney',
       key: 'totalMoney',
-      render: (x, record) => <span className="fw-semibold text-danger"><FormatCurrency value={x === null ? 0 : x + record.moneyShip} /></span>
+      render: (x, record) => {
+        const discountedTotal = record.discountValue 
+          ? (x === null ? 0 : x + record.moneyShip - record.discountValue)
+          : (x === null ? 0 : x + record.moneyShip);
+        return <span className="fw-semibold text-danger"><FormatCurrency value={discountedTotal} /></span>;
+      }
     },
     {
       title: 'Loại đơn hàng',

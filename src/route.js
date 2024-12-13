@@ -29,6 +29,7 @@ import Statistic from "./pages/admin/statistic/Statistic";
 import withAuth from "./auth";
 import Payment from "./pages/admin/payment/Payment";
 import UserProfile from "./pages/admin/settings/UserProfile";
+import ReturnGoods from "./pages/admin/return/returnProduct";
 
 const publicRouters = [
   { path: "/", element: withAuth(Statistic) },
@@ -63,6 +64,9 @@ const publicRouters = [
 
   { path: "/admin/vnpay-payment", element: withAuth(Payment) },
   { path: "/admin/profile", element: withAuth(UserProfile) },
+
+  { path: "/admin/tra-hang", element: withAuth(ReturnGoods) },
+
   // { path: '*', element: NotFound}
 ];
 

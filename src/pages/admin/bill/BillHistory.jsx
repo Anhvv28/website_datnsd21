@@ -70,6 +70,7 @@ function BillHistory({ props }) {
                                         : item.status === 500 ? "Chỉnh sửa đơn hàng" : ""}
                     </span>
                   </tr>
+                  <td>{item.status === 8 ? "Giảm giá" : "Khác"}</td>
                   <td><FormatDate date={item.createAt} /></td>
                   <td>{item.createBy}</td>
                   <td>{item.note}</td>

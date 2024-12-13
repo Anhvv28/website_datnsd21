@@ -4,7 +4,7 @@ function Footer() {
   return (
     <div className="d-flex justify-content-center">
       <footer className="text-center my-5">
-        Copyright © {new Date().getFullYear()} Nice Shoes <i className="fas fa-heart text-blue"></i>
+        Copyright © {new Date().getFullYear()} Inno String Stride <i className="fas fa-heart text-blue"></i>
         <div>All rights reserved</div>
       </footer>
     </div>

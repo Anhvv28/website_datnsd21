@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BaseUI from "./layouts/admin/BaseUI";
 import CoreUI from "./layouts/admin/CoreUI";
-import { getTokenEmpoloyee } from "./helper/useCookies";
+import {getTokenEmpoloyee} from "./helper/useCookies";
 import Login from "./pages/admin/login/Login";
 import withAuth from "./auth";
 import TemplateExportBill from "./pages/admin/export-pdf/TemplateExportBill";

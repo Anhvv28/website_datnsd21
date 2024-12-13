@@ -207,7 +207,7 @@ function CustomerDetail() {
               <Input placeholder="Nhập tên khách hàng..." />
             </Form.Item>
               <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
-                <Input type="date" />
+              <Input type="date" max={new Date().toISOString().split("T")[0]} />
               </Form.Item>
               <Form.Item
                 label={"Giới tính"}

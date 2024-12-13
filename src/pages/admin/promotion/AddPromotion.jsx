@@ -72,7 +72,7 @@ function AddPromotion() {
               </Col>
               <Col xl={12}>
                 <Form.Item label={"Giá trị (%)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
-                  <Input placeholder="Nhập % đợt giảm giá..." />
+                <Input type="number" min={0} placeholder="Nhập % đợt giảm giá..." suffix="%" />
                 </Form.Item>
               </Col>
               <Col xl={12}>
