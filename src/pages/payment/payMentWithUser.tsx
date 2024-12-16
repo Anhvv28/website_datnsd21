@@ -309,7 +309,7 @@ const PayMentWithUser = () => {
 
   useEffect(() => {
     // Đặt độ trễ là 1000ms (1 giây)
-    const delayDuration = 1000;
+    const delayDuration = 900;
 
     const timerId = setTimeout(() => {
       // Kiểm tra nếu userPrf.id tồn tại và chưa được thực thi trước đó
@@ -649,16 +649,20 @@ const PayMentWithUser = () => {
             <div className="w-[30%] flex items-center justify-between mx-5">
               <span className="text-gray-600  text-base font-medium">
                 Tổng thanh toán
-              </span>
-              {!!feeShip && !!listProducts && (
-                <span className="text-red-600  text-lg font-medium">
-                  {formatCurrency(
-                    calculateTotalDone(listProducts) +
-                      Number(feeShip ? feeShip : 0) -
-                      (percent / 100) * calculateTotalDone(listProducts)
-                  )}
                 </span>
-              )}
+    {!!listProducts && listProducts.length > 0 ? (
+      <span className="text-red-600 text-lg font-medium">
+        {formatCurrency(
+          calculateTotalDone(listProducts) +
+            (feeShip || 0) -
+            (percent > 0
+              ? (percent / 100) * calculateTotalDone(listProducts)
+              : 0)
+        )}
+      </span>
+    ) : (
+      <span className="text-gray-400 text-lg font-normal">0đ</span>
+    )}
             </div>
           </div>
           <div className="w-full h-[2px] border-b-[1px] border-dashed border-gray-400" />

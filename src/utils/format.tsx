@@ -2,21 +2,24 @@ import slugify from "slugify";
 import { IDetailProductCart, IProduct, Product } from "../types/product.type";
 
 export const convertToCurrencyString = (number: number | string): string => {
-  // Kiểm tra xem giá trị đầu vào có phải là kiểu number không
-  if (typeof number === "number") {
-    if (number === undefined || number === null) {
-      const currencyString = 0;
-      return "0";
-    } else {
-      const currencyString = number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-      return currencyString;
-    }
-  } else {
-    return "";
+  if (number === undefined || number === null || number === "") {
+    return "0"; // Giá trị mặc định
   }
+
+  // Nếu là chuỗi, chuyển đổi sang số
+  const parsedNumber =
+    typeof number === "string" ? parseFloat(number) : number;
+
+  // Nếu không phải là số hợp lệ, trả về "0"
+  if (isNaN(parsedNumber)) {
+    return "0";
+  }
+
+  // Định dạng số thành chuỗi tiền tệ
+  return parsedNumber.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
 };
 
 export const renderColor = (item: IProduct) => {

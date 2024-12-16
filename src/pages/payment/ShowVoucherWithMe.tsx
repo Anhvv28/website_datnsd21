@@ -19,6 +19,19 @@ const ShowVoucherWithMe = ({
 }) => {
   const [selected, setSelected] = useState<number>();
   const [voucher, setVoucher] = useState<IVoucher[]>();
+  // const getVoucher = async () => {
+  //   try {
+  //     const res = await axios({
+  //       method: "get",
+  //       url: API.getVoucherWithUser(userId),
+  //     });
+  //     if (res.status) {
+  //       setVoucher(res?.data?.data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const getVoucher = async () => {
     try {
       const res = await axios({
@@ -26,7 +39,25 @@ const ShowVoucherWithMe = ({
         url: API.getVoucherWithUser(userId),
       });
       if (res.status) {
-        setVoucher(res?.data?.data);
+        if (res?.data?.data.length === 1) {
+          const voucher = res?.data?.data[0];
+          const currentDate = new Date();
+          const voucherEndDate = new Date(voucher.endDate);
+  
+          if (currentDate > voucherEndDate) {
+            toast.warning("Voucher đã hết hạn sử dụng");
+            return;
+          }
+  
+          if (valueCheck >= voucher.minBillValue) {
+            setVoucher(voucher.id);
+            toast.success("Áp dụng voucher thành công");
+          } else {
+            toast.warning("Voucher không được áp dụng");
+          }
+        } else {
+          toast.warning("Không tìm thấy mã");
+        }
       }
     } catch (error) {
       console.log(error);

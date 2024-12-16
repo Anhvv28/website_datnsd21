@@ -39,6 +39,25 @@ const ShowVoucherList = ({
       sliderRef.current.slickPrev();
     }
   };
+  // const getVoucherSearch = async () => {
+  //   const res = await axios({
+  //     method: "get",
+  //     url: API.getVoucherSearchPub(inputVoucher ? inputVoucher : ""),
+  //   });
+  //   if (res.status) {
+  //     if (res?.data?.data.length === 1) {
+  //       if (valueCheck >= res?.data?.data[0].minBillValue) {
+  //         setPrecent(res?.data?.data[0]?.percentReduce);
+  //         setVoucher(res?.data?.data[0]?.id);
+  //         toast.success("Áp dụng voucher thành công");
+  //       } else {
+  //         toast.warning("Voucher không được áp dụng");
+  //       }
+  //     } else {
+  //       toast.warning("Không tìm thấy mã");
+  //     }
+  //   }
+  // };
   const getVoucherSearch = async () => {
     const res = await axios({
       method: "get",
@@ -46,9 +65,18 @@ const ShowVoucherList = ({
     });
     if (res.status) {
       if (res?.data?.data.length === 1) {
-        if (valueCheck >= res?.data?.data[0].minBillValue) {
-          setPrecent(res?.data?.data[0]?.percentReduce);
-          setVoucher(res?.data?.data[0]?.id);
+        const voucher = res?.data?.data[0];
+        const currentDate = new Date();
+        const voucherEndDate = new Date(voucher.endDate);
+
+        if (currentDate > voucherEndDate) {
+          toast.warning("Voucher đã hết hạn sử dụng");
+          return;
+        }
+
+        if (valueCheck >= voucher.minBillValue) {
+          setPrecent(voucher.percentReduce);
+          setVoucher(voucher.id);
           toast.success("Áp dụng voucher thành công");
         } else {
           toast.warning("Voucher không được áp dụng");
@@ -58,13 +86,27 @@ const ShowVoucherList = ({
       }
     }
   };
+  // const getAllVoucher = async () => {
+  //   const res = await axios({
+  //     method: "get",
+  //     url: API.getVoucherPublic(),
+  //   });
+  //   if (res.status) {
+  //     setDataVoucher(res?.data?.data);
+  //   }
+  // };
   const getAllVoucher = async () => {
     const res = await axios({
       method: "get",
       url: API.getVoucherPublic(),
     });
     if (res.status) {
-      setDataVoucher(res?.data?.data);
+      const currentDate = new Date();
+      const filteredVouchers = res?.data?.data.filter((voucher: IVoucher) => {
+        const voucherEndDate = new Date(voucher.endDate);
+        return currentDate <= voucherEndDate;
+      });
+      setDataVoucher(filteredVouchers);
     }
   };
   const handleChangeInput = (event: any) => {

@@ -98,13 +98,8 @@ const ShowBillCheck = () => {
           <div className="">
             <p className="text-gray-500 text-sm mb-2">Tổng thanh toán</p>
             <p className="font-medium  ">
-              {!!bill
-                ? convertToCurrencyString(
-                    Number(bill?.totalMoney) +
-                      Number(bill?.moneyShip) -
-                      Number(bill?.moneyReduce)
-                  )
-                : ""}
+                 {!!bill ? convertToCurrencyString(Number(bill?.totalMoney)+
+                      Number(bill?.moneyShip)) : ""}
             </p>
           </div>
         </div>

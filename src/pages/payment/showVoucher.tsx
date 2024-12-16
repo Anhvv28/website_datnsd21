@@ -24,6 +24,49 @@ const ShowVoucher = ({
   const [inputVoucher, setInputVoucher] = useState<string>();
   const [voucher, setVoucher] = useState<IVoucher[]>();
   const [voucherWith, setVoucherWith] = useState<IVoucher[]>();
+
+  const isVoucherExpired = (expirationDate: string) => {
+    return new Date(expirationDate) < new Date();
+  };
+
+  const getVoucherWithUser = async () => {
+    try {
+      const res = await axios({
+        method: "get",
+        url: API.getVoucherWithUser(userId),
+      });
+      if (res.status) {
+        const validVouchers = res?.data?.data.filter(
+          (voucher: IVoucher) => !isVoucherExpired(voucher.endDate)
+        );
+        setVoucherWith(validVouchers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getVoucher = async () => {
+    try {
+      const res = await axios({
+        method: "get",
+        url: API.getVoucherPublic(),
+      });
+      if (res.status) {
+        const validVouchers = res?.data?.data.filter(
+          (voucher: IVoucher) => !isVoucherExpired(voucher.endDate)
+        );
+        setVoucher(validVouchers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangeInput = (event: any) => {
+    setInputVoucher(event?.target?.value);
+  };
+
   const getVoucherSearch = async () => {
     const res = await axios({
       method: "get",
@@ -31,18 +74,26 @@ const ShowVoucher = ({
     });
     if (res.status) {
       if (res?.data?.data.length === 1) {
-        if (valueCheck >= res?.data?.data[0].minBillValue) {
-          setPrecent(res?.data?.data[0]?.percentReduce);
-          setIdVoucher(res?.data?.data[0]?.id);
+        const voucher = res?.data?.data[0];
+        if (isVoucherExpired(voucher.expirationDate)) {
+          toast.warning("Voucher đã hết hạn sử dụng");
+          return;
+        }
+        if (valueCheck >= voucher.minBillValue) {
+          setPrecent(voucher.percentReduce);
+          setIdVoucher(voucher.id);
           toast.success("Áp dụng voucher thành công");
           setInputVoucher("");
           onClose();
+        } else {
+          toast.warning("Voucher không được áp dụng");
         }
       } else {
         getVoucherSearchPub();
       }
     }
   };
+
   const getVoucherSearchPub = async () => {
     const res = await axios({
       method: "get",
@@ -50,9 +101,14 @@ const ShowVoucher = ({
     });
     if (res.status) {
       if (res?.data?.data.length === 1) {
-        if (valueCheck >= res?.data?.data[0].minBillValue) {
-          setPrecent(res?.data?.data[0]?.percentReduce);
-          setIdVoucher(res?.data?.data[0]?.id);
+        const voucher = res?.data?.data[0];
+        if (isVoucherExpired(voucher.expirationDate)) {
+          toast.warning("Voucher đã hết hạn sử dụng");
+          return;
+        }
+        if (valueCheck >= voucher.minBillValue) {
+          setPrecent(voucher.percentReduce);
+          setIdVoucher(voucher.id);
           toast.success("Áp dụng voucher thành công");
           setInputVoucher("");
           onClose();
@@ -64,39 +120,7 @@ const ShowVoucher = ({
       }
     }
   };
-  const getVoucherWithUser = async () => {
-    try {
-      const res = await axios({
-        method: "get",
-        url: API.getVoucherWithUser(userId),
-      });
-      if (res.status) {
-        setVoucherWith(res?.data?.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleChangeInput = (event: any) => {
-    setInputVoucher(event?.target?.value);
-  };
-  const getVoucher = async () => {
-    try {
-      const res = await axios({
-        method: "get",
-        url: API.getVoucherPublic(),
-      });
-      if (res.status) {
-        setVoucher(res?.data?.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getVoucherWithUser();
-    getVoucher();
-  }, []);
+
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add("overflow-hidden");
@@ -107,7 +131,14 @@ const ShowVoucher = ({
       document.body.classList.remove("overflow-hidden");
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    getVoucherWithUser();
+    getVoucher();
+  }, [userId]);
+
   if (!isOpen) return null;
+
   return (
     <div
       className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
@@ -226,10 +257,10 @@ const ShowVoucher = ({
                   onClick={() => {
                     if (valueCheck >= voucher?.minBillValue) {
                       setPrecent(voucher?.percentReduce);
-                      setSelected(voucher?.code);
+                      setSelected(voucher.code);
                       setIdVoucher(voucher?.id);
-                      onClose();
                       toast.success("Áp dụng voucher thành công");
+                      onClose();
                       setInputVoucher("");
                     } else {
                       toast.warning("Voucher không được áp dụng");
