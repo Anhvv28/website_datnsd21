@@ -494,56 +494,73 @@ public class BillServiceImpl implements BillService {
     @Override
     @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject giveback(GivebackRequest request) {
-        // 1. Fetch the BillDetail by its ID
+        // Fetch the BillDetail and associated Bill
         BillDetail billDetail = billDetailRepository.findById(request.getBillDetail())
                 .orElseThrow(() -> new RestApiException("Không tìm thấy chi tiết hóa đơn!"));
-
-        // 2. Fetch the associated ShoeDetail
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
-
-        // 3. Fetch the associated Bill
         Bill bill = billDetail.getBill();
 
-        // 4. Ensure the voucher is not reused and set the bill status to refund in process
-        bill.setVoucher(null);
+        // **Đặt trạng thái TRA_HANG ngay từ đầu** (Điểm mấu chốt của đoạn mã thứ 2)
         bill.setStatus(BillStatusConstant.TRA_HANG);
+        billRepository.save(bill); // Lưu lại trạng thái của Bill ngay lập tức
 
-        // 5. Validate the refund quantity
-        if (request.getQuantity() <= 0) {
-            throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
-        }
-        if (request.getQuantity() > billDetail.getQuantity()) {
-            throw new RestApiException("Quá số lượng cho phép!");
+        // Validate refund quantity
+        if (request.getQuantity() <= 0 || request.getQuantity() > billDetail.getQuantity()) {
+            throw new RestApiException("Số lượng không hợp lệ!");
         }
 
-        // 6. Fetch the promotion price from promotion_detail if it exists
+        // Determine the price of the product
         PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailId(shoeDetail.getId());
-
-        // 7. Determine the price to use for refund calculation
-        // If promotionPrice exists, use it; otherwise, use the original price from billDetail
         BigDecimal priceToUse = (promotionDetail != null && promotionDetail.getPromotionPrice() != null)
                 ? promotionDetail.getPromotionPrice()
                 : billDetail.getPrice();
 
-        // 8. Calculate the amount to subtract from the bill's total money
-        BigDecimal amountToSubtract = priceToUse.multiply(BigDecimal.valueOf(request.getQuantity()));
+        // Calculate the total refund price
+        BigDecimal totalRefundPrice = priceToUse.multiply(BigDecimal.valueOf(request.getQuantity()));
 
-        // 9. Update the bill and billDetail based on whether it's a full or partial refund
+        // Update BillDetail
         if (request.getQuantity().equals(billDetail.getQuantity())) {
-            // Full refund for this BillDetail
-            bill.setTotalMoney(bill.getTotalMoney().subtract(amountToSubtract));
             billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
         } else {
-            // Partial refund: reduce the quantity in BillDetail
             billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-            bill.setTotalMoney(bill.getTotalMoney().subtract(amountToSubtract));
         }
-
-        // 10. Save the updated Bill and BillDetail
-        billRepository.save(bill);
         billDetailRepository.save(billDetail);
 
-        // 11. Record the refund action in BillHistory
+        // Recalculate total value of the bill before discounts
+        BigDecimal newTotalBeforeDiscount = billDetailRepository.findByBillId(bill.getId())
+                .stream()
+                .filter(detail -> detail.getStatus() != BillDetailStatusConstant.TRA_HANG)
+                .map(detail -> {
+                    PromotionDetail detailPromotion = promotionDetailRepository.findByShoeDetailId(detail.getShoeDetail().getId());
+                    return (detailPromotion != null && detailPromotion.getPromotionPrice() != null)
+                            ? detailPromotion.getPromotionPrice().multiply(BigDecimal.valueOf(detail.getQuantity()))
+                            : detail.getPrice().multiply(BigDecimal.valueOf(detail.getQuantity()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Check if voucher is still applicable
+        BigDecimal refundAmount;
+        BigDecimal initialBillTotal = bill.getTotalMoney(); // Total paid by the customer
+        Voucher voucher = bill.getVoucher();
+
+        if (voucher != null && newTotalBeforeDiscount.compareTo(voucher.getMinBillValue()) >= 0) {
+            BigDecimal newMoneyReduce = newTotalBeforeDiscount.multiply(BigDecimal.valueOf(voucher.getPercentReduce()))
+                    .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+            bill.setMoneyReduce(newMoneyReduce);
+            bill.setTotalMoney(newTotalBeforeDiscount.subtract(newMoneyReduce));
+        } else {
+            bill.setMoneyReduce(BigDecimal.ZERO);
+            bill.setVoucher(null);
+            bill.setTotalMoney(newTotalBeforeDiscount);
+        }
+
+        // Calculate the refund amount
+        refundAmount = initialBillTotal.subtract(bill.getTotalMoney());
+
+        // Save updated Bill
+        billRepository.save(bill);
+
+        // Record the refund in BillHistory
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setStatus(BillStatusConstant.TRA_HANG);
@@ -551,13 +568,13 @@ public class BillServiceImpl implements BillService {
                 "-" + shoeDetail.getSize().getName() + "]\" - Số lượng: \"" + request.getQuantity() + "\". Lý do: " + request.getNote());
         billHistoryRepository.save(history);
 
-        // 12. Check if all BillDetails have been refunded; if so, cancel the bill
+        // Check if all BillDetails have been refunded
         boolean allRefunded = billDetailRepository.findByBillAndStatus(bill, false).isEmpty();
         if (allRefunded) {
             bill.setStatus(BillStatusConstant.DA_HUY);
             billRepository.save(bill);
 
-            // Record the bill cancellation in BillHistory
+            // Record bill cancellation in BillHistory
             BillHistory cancelHistory = new BillHistory();
             cancelHistory.setBill(bill);
             cancelHistory.setNote("Đơn hàng đã bị hủy");
@@ -565,8 +582,8 @@ public class BillServiceImpl implements BillService {
             billHistoryRepository.save(cancelHistory);
         }
 
-        // 13. Return the updated BillDetail
-        return new ResponseObject(billDetail);
+        // Return refund amount to the frontend
+        return new ResponseObject(refundAmount);
     }
 
 
