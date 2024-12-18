@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IPromotionDetailRepository extends JpaRepository<PromotionDetail, Long> {
     Boolean existsByShoeDetailId(Long id);
+
 
     @Query("SELECT pd.promotionPrice FROM PromotionDetail pd WHERE pd.shoeDetail.id = :shoeDetailId")
     BigDecimal findPromotionPriceByShoeDetailId(@Param("shoeDetailId") Long shoeDetailId);

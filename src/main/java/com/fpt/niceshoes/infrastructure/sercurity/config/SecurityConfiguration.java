@@ -41,7 +41,7 @@ public class SecurityConfiguration {
 
                         request -> request.requestMatchers("/login-v2/**", "/client/**", "/api/vn-pay/**","/api/bill/status").permitAll()
                                 .requestMatchers("/api/chat/**").permitAll()
-                                .requestMatchers("/api/**").hasAnyRole("ADMIN","EMLOYEE")
+                                .requestMatchers("/api/**").hasAnyRole("ADMIN","EMLOYEE","USER")
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

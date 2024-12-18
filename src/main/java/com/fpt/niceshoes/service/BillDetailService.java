@@ -6,6 +6,7 @@ import com.fpt.niceshoes.dto.request.billdetail.BillDetailRequest;
 import com.fpt.niceshoes.dto.response.BillDetailResponse;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public interface BillDetailService {
     PageableObject<BillDetailResponse> getAll(BillDetailRequest request);
@@ -16,4 +17,7 @@ public interface BillDetailService {
     BillDetail delete(Long id);
 
     BillDetail updateQuantity(Long id, Integer newQuantity, BigDecimal price);
+
+    Map<String, Object> getMostCanceledProduct();
+    Map<String, Object> getMostReturnedProduct();
 }

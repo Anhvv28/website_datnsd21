@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bill-detail")
@@ -55,4 +57,18 @@ public class BillDetailController {
     public ResponseObject delete(@PathVariable Long id){
         return new ResponseObject(billDetailService.delete(id));
     }
+
+
+    @GetMapping("/most-returned-canceled-products")
+    public Map<String, Object> getMostReturnedAndCanceledProducts() {
+        System.out.println("API called: /most-returned-canceled-products");
+        Map<String, Object> result = new HashMap<>();
+        result.put("mostCanceled", billDetailService.getMostCanceledProduct());
+        result.put("mostReturned", billDetailService.getMostReturnedProduct());
+        System.out.println("Response: " + result);
+        System.out.println("Result for most canceled product: " + result);
+        return result;
+    }
+
+
 }

@@ -163,7 +163,7 @@ public class DBGenerator implements CommandLineRunner {
         nhanVien1.setBirthday(new Date(2001, 03, 03));
         nhanVien1.setAvatar("");
         nhanVien1.setCccd("033201005434");
-        nhanVien1.setEmail("anhvv28@fpt.com");
+        nhanVien1.setEmail("anhvv28@fptcloud.com");
         nhanVien1.setAccountRoles(AccountRoles.ROLE_ADMIN);
         nhanVien1.setGender("Nam");
         nhanVien1.setPassword(new BCryptPasswordEncoder().encode("admin"));

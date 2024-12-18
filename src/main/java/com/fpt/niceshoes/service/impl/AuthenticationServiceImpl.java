@@ -84,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String password = GenCode.randomPassword();
         optional.get().setPassword(passwordEncoder.encode(password));
         accountRepository.save(optional.get());
-        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Nice Shoes Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + password + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
+        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Inno String Stride Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + password + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n";
         mailUtils.sendEmail(optional.get().getEmail(), "Thư xác thực tài khoản", emailContent);
         return "Thành công.";
     }

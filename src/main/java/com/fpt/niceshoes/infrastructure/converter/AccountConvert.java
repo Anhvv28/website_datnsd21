@@ -34,6 +34,7 @@ public class AccountConvert {
         account.setUsername(request.getUsername());
         account.setPhoneNumber(request.getPhoneNumber());
         account.setGender(request.getGender());
+        account.setDeleted(request.getDeleted());
         return account;
     }
 }

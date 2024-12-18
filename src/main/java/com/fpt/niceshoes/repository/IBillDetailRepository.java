@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
@@ -26,6 +28,36 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
     BillDetail findByShoeDetailCodeAndBillIdAndStatus(String codeShoeDetail, Long idBill, Boolean status);
 
     Boolean existsByShoeDetailIdAndBillIdAndStatus(Long idShoeDetail, Long idBill, Boolean status);
+    // Sản phẩm bị hủy nhiều nhất (status=7)
+    @Query(value = """
+SELECT s.name, COUNT(*) as cnt
+FROM bill_detail bd
+JOIN bill b ON bd.bill_id = b.id
+JOIN shoe_detail sd ON sd.id = bd.shoe_detail_id
+JOIN shoe s ON s.id = sd.shoe_id
+WHERE b.status = 7
+GROUP BY s.name
+ORDER BY cnt DESC
+LIMIT 1
+""", nativeQuery = true)
+    Optional<Object[]> findMostCanceledProduct();
+
+    // Sản phẩm bị hoàn trả nhiều nhất (status=8)
+    @Query(value = """
+SELECT s.name, COUNT(*) as cnt
+FROM bill_detail bd
+JOIN bill b ON bd.bill_id = b.id
+JOIN shoe_detail sd ON sd.id = bd.shoe_detail_id
+JOIN shoe s ON s.id = sd.shoe_id
+WHERE b.status = 8
+GROUP BY s.name
+ORDER BY cnt DESC
+LIMIT 1
+""", nativeQuery = true)
+    Optional<Object[]> findMostReturnedProduct();
+
+
+
 
     @Query(value = """
             SELECT

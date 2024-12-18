@@ -33,5 +33,9 @@ public interface VoucherResponse {
     String getCustomer();
 
     Boolean getType();
+
+    @Value("#{target.percentReduce != null ? T(String).format('%.1f%%', target.percentReduce) : '0%'}")
+    String getDiscountRate();
+
 }
 

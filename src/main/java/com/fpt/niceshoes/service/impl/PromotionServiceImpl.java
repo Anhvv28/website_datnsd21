@@ -175,6 +175,7 @@ public class PromotionServiceImpl implements PromotionService {
     public void updateStatusPromotion() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Promotion> promotions = promotionRepository.findAll();
+
         for (Promotion promotion : promotions) {
             LocalDateTime startDate = promotion.getStartDate();
             LocalDateTime endDate = promotion.getEndDate();
@@ -182,14 +183,12 @@ public class PromotionServiceImpl implements PromotionService {
                 promotion.setStatus(0); // Chưa bắt đầu
             } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
                 promotion.setStatus(1); // Đang diễn ra
-//                promotion.setDeleted(null);
+                promotion.setDeleted(null);
             } else {
                 promotion.setStatus(2); // Đã kết thúc
-//                promotion.setDeleted(true);
-            }
-            if (endDate.isEqual(startDate)) {
-                promotion.setStatus(2); // Đã kết thúc
-//                promotion.setDeleted(true);
+                promotion.setDeleted(true);
+                // Xóa dữ liệu PromotionDetail liên quan
+                promotionDetailRepository.deleteAllById(promotionDetailRepository.findIdsByPromotionId(promotion.getId()));
             }
             promotionRepository.save(promotion);
         }
