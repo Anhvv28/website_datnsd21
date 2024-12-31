@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -37,4 +39,6 @@ public class Notification extends PrimaryEntity {
     @Column(name = "action")
     private String action;
 
+    @Column(name = "create_at")
+    private LocalDateTime createAt = LocalDateTime.now();
 }

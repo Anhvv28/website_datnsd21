@@ -30,7 +30,6 @@ public interface ShoeResponse {
     BigDecimal getMinPrice();
     String getDescription();
     String getImages();
-
     Integer getQuantitySold();
     BigDecimal getDiscountValue();
 }

@@ -52,6 +52,7 @@ public class ChatGPTService {
 
     public String getChatGPTResponse(String userMessage) {
         // Kiểm tra xem truy vấn có liên quan đến voucher hay không
+        System.out.println("hahhahahaha" + userMessage);
         if (userMessage.toLowerCase().contains("voucher")) {
             return handleVoucherQuery(userMessage);
         }
@@ -73,6 +74,7 @@ public class ChatGPTService {
                         .max(Comparator.comparing(VoucherResponse::getDiscountRate))
                         .orElse(null);
                 return maxDiscountVoucher != null
+
                         ? "Voucher giảm giá nhiều nhất là: " + maxDiscountVoucher.getName()
                         : "Không có voucher nào hiện tại.";
             } else {
@@ -95,7 +97,7 @@ public class ChatGPTService {
 
     private String callChatGPTApi(String prompt) {
         String apiUrl = "https://api.openai.com/v1/chat/completions";
-        String model = "gpt-4o";
+        String model = "gpt-4o-mini";
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost postRequest = new HttpPost(apiUrl);

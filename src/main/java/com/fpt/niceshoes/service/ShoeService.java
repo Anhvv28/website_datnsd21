@@ -17,4 +17,5 @@ public interface ShoeService {
     Shoe changeStatus(Long id);
     List<ShoePromotionResponse> getAllShoeInPromotion(Long promotion);
     List<ShoeResponse> getTopSell(Integer top);
+//    List<String> getAllModels();
 }
