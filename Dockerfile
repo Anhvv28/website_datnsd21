@@ -1,11 +1,14 @@
-# Sử dụng OpenJDK làm base image
+# Use OpenJDK as the base image
 FROM openjdk:17-jdk-slim
 
-# Tạo và chuyển đến thư mục làm việc
+# Set the working directory
 WORKDIR /app
 
-# Copy file JAR vào container
+# Copy the application JAR file
 COPY target/nice-shoes-be-0.0.1-SNAPSHOT.jar app.jar
 
-# Lệnh để chạy hàm DBGenerator
-ENTRYPOINT ["java", "-cp", "app.jar", "com.fpt.tool.DBGenerator"]
+# Expose the application port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
