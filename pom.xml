@@ -178,7 +178,7 @@
             <goal>java</goal>
           </goals>
           <configuration>
-            <mainClass>com.fpt.niceshoes.DBGenerator</mainClass>
+            <mainClass>com.fpt.niceshoes.tool.DBGenerator</mainClass>
           </configuration>
         </execution>
         <execution>
