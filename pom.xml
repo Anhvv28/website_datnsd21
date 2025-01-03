@@ -164,7 +164,7 @@
 
     </dependencies>
 
-    <build>
+<build>
   <plugins>
     <plugin>
       <groupId>org.codehaus.mojo</groupId>
@@ -172,6 +172,8 @@
       <version>3.5.0</version>
       <executions>
         <execution>
+          <id>db-generator-execution</id> <!-- Sử dụng id duy nhất -->
+          <phase>generate-sources</phase>
           <goals>
             <goal>java</goal>
           </goals>
@@ -180,16 +182,19 @@
           </configuration>
         </execution>
         <execution>
+          <id>application-execution</id> <!-- Sử dụng id duy nhất -->
+          <phase>install</phase>
           <goals>
             <goal>java</goal>
           </goals>
           <configuration>
-            <mainClass>com.fpt.niceshoes.Application</mainClass> <!-- Thay thế với lớp chính của ứng dụng -->
+            <mainClass>com.fpt.niceshoes.Application</mainClass>
           </configuration>
         </execution>
       </executions>
     </plugin>
   </plugins>
 </build>
+
 
 </project>
