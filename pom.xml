@@ -170,7 +170,7 @@
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>exec-maven-plugin</artifactId>
       <version>3.5.0</version>
-      <executions>
+<!--       <executions>
         <execution>
           <id>db-generator-execution</id> <!-- Sử dụng id duy nhất -->
           <phase>generate-sources</phase>
@@ -181,7 +181,7 @@
             <mainClass>com.fpt.niceshoes.tool.DBGenerator</mainClass>
           </configuration>
         </execution>
-        <execution>
+        <execution> -->
           <id>application-execution</id> <!-- Sử dụng id duy nhất -->
           <phase>install</phase>
           <goals>
